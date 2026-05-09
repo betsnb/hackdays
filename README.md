@@ -1,5 +1,4 @@
 # hackdays
 Hack roborregos
 
-
-//homszak
+hallo meine freund
