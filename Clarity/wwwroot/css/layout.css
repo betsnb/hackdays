@@ -1,0 +1,361 @@
+/* ========================================
+   StudyHub — Sidebar Layout
+   layout.css
+   ======================================== */
+
+:root {
+    --sb-width: 260px;
+    --sb-collapsed-width: 68px;
+    --transition: 0.28s cubic-bezier(.4,0,.2,1);
+}
+
+body { margin: 0; padding: 0; }
+
+body > header { display: none !important; }
+body > footer  { display: none !important; }
+body > .container { padding: 0 !important; max-width: 100% !important; }
+
+/* ---- Shell ---- */
+.sh-shell {
+    display: flex;
+    min-height: 100vh;
+    background: var(--bg, #F8FAFC);
+    transition: background 0.22s ease;
+}
+
+/* ==============================
+   SIDEBAR
+   ============================== */
+.sh-sidebar {
+    width: var(--sb-width);
+    min-height: 100vh;
+    background: var(--surface, #FFFFFF);
+    border-right: 1px solid var(--border, #E2E8F0);
+    display: flex;
+    flex-direction: column;
+    padding: 1.6rem 1rem;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 200;
+    overflow: hidden;
+    transition:
+        width var(--transition),
+        background 0.22s ease,
+        border-color 0.22s ease,
+        transform var(--transition);
+}
+
+/* Estado colapsado */
+.sh-sidebar.collapsed {
+    width: var(--sb-collapsed-width);
+}
+
+/* ---- Brand ---- */
+.sh-sb-brand {
+    padding: 0 0.4rem;
+    margin-bottom: 1.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.sh-sb-brand-name {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--blue, #3B82F6);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    transition: opacity var(--transition), width var(--transition);
+}
+
+.sh-sb-brand-sub {
+    font-size: 0.78rem;
+    color: var(--text-muted, #64748B);
+    margin-top: 0.1rem;
+    transition: opacity var(--transition);
+}
+
+.sh-sidebar.collapsed .sh-sb-brand-name,
+.sh-sidebar.collapsed .sh-sb-brand-sub {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+}
+
+/* Logo icon (visible cuando colapsado) */
+.sh-sb-logo-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #3B82F6, #2563EB);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: white;
+    font-size: 16px;
+    font-weight: 800;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* ---- Divider ---- */
+.sh-sb-divider {
+    height: 1px;
+    background: var(--border, #E2E8F0);
+    margin: 0 0 1.2rem;
+    transition: background 0.22s ease;
+}
+
+/* ---- Nav ---- */
+.sh-sb-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    flex: 1;
+}
+
+.sh-sb-link {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.75rem 0.9rem;
+    border-radius: 12px;
+    text-decoration: none;
+    font-family: 'Sora', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--text-muted, #64748B);
+    transition: background 0.18s ease, color 0.18s ease;
+    border: none;
+    background: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    position: relative;
+}
+
+.sh-sb-link:hover {
+    background: var(--border, #E2E8F0);
+    color: var(--text, #0F172A);
+}
+
+.sh-sb-link.active {
+    background: rgba(59,130,246,0.10);
+    color: var(--blue, #3B82F6);
+}
+
+[data-theme="dark"] .sh-sb-link.active {
+    background: rgba(59,130,246,0.18);
+}
+
+.sh-sb-icon {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    width: 20px;
+}
+
+/* Etiqueta de texto del link */
+.sh-sb-label {
+    transition: opacity var(--transition);
+}
+
+.sh-sidebar.collapsed .sh-sb-label {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+    display: inline-block;
+}
+
+/* Tooltip cuando colapsado */
+.sh-sidebar.collapsed .sh-sb-link {
+    justify-content: center;
+    padding: 0.75rem;
+    gap: 0;
+}
+
+.sh-sidebar.collapsed .sh-sb-link:hover::after {
+    content: attr(data-label);
+    position: absolute;
+    left: calc(var(--sb-collapsed-width) - 4px);
+    background: var(--surface, #fff);
+    color: var(--text, #0F172A);
+    border: 1px solid var(--border, #E2E8F0);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    white-space: nowrap;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    z-index: 999;
+    pointer-events: none;
+}
+
+/* ---- Botón colapsar ---- */
+.sh-sb-collapse-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--border, #E2E8F0);
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted, #64748B);
+    flex-shrink: 0;
+    margin-left: auto;
+    transition: background 0.18s ease, transform var(--transition);
+}
+
+.sh-sb-collapse-btn:hover {
+    background: rgba(59,130,246,0.15);
+    color: var(--blue, #3B82F6);
+}
+
+.sh-sidebar.collapsed .sh-sb-collapse-btn {
+    transform: rotate(180deg);
+    margin-left: 0;
+    margin-top: 0.5rem;
+}
+
+/* Cuando colapsado, el botón va debajo del logo */
+.sh-sidebar.collapsed .sh-sb-brand {
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* ---- Bottom: theme toggle ---- */
+.sh-sb-bottom {
+    border-top: 1px solid var(--border, #E2E8F0);
+    padding-top: 1rem;
+    margin-top: auto;
+    transition: border-color 0.22s ease;
+}
+
+.sh-sb-theme-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted, #64748B);
+    font-family: 'Sora', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.65rem 0.9rem;
+    border-radius: 10px;
+    transition: background 0.18s ease, color 0.18s ease;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.sh-sb-theme-btn:hover {
+    background: var(--border, #E2E8F0);
+    color: var(--text, #0F172A);
+}
+
+.sh-sidebar.collapsed .sh-sb-theme-btn {
+    justify-content: center;
+    padding: 0.65rem;
+}
+
+.sh-sidebar.collapsed .sh-sb-theme-btn #sb-theme-label {
+    display: none;
+}
+
+/* ==============================
+   CONTENT AREA
+   ============================== */
+.sh-content {
+    margin-left: var(--sb-width);
+    flex: 1;
+    min-height: 100vh;
+    padding: 2rem 2.5rem;
+    transition: margin-left var(--transition);
+}
+
+.sh-content.collapsed {
+    margin-left: var(--sb-collapsed-width);
+}
+
+/* ==============================
+   MOBILE — hamburger
+   ============================== */
+.sh-topbar {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 300;
+    height: 56px;
+    background: var(--surface, #FFFFFF);
+    border-bottom: 1px solid var(--border, #E2E8F0);
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+    transition: background 0.22s ease, border-color 0.22s ease;
+}
+
+.sh-topbar-brand {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--blue, #3B82F6);
+    text-decoration: none;
+}
+
+.sh-hamburger {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text, #0F172A);
+    display: flex;
+    align-items: center;
+    padding: 6px;
+    border-radius: 8px;
+    transition: background 0.15s ease;
+}
+
+.sh-hamburger:hover { background: var(--border); }
+
+.sh-sb-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 199;
+    backdrop-filter: blur(2px);
+}
+
+.sh-sb-overlay.open { display: block; }
+
+@media (max-width: 768px) {
+    .sh-topbar { display: flex; }
+
+    .sh-sidebar {
+        transform: translateX(-100%);
+        top: 0;
+        width: var(--sb-width) !important; /* siempre expandido en móvil */
+    }
+
+    .sh-sidebar.open {
+        transform: translateX(0);
+    }
+
+    .sh-content,
+    .sh-content.collapsed {
+        margin-left: 0;
+        padding: 1.2rem 1rem;
+        padding-top: calc(56px + 1.2rem);
+    }
+
+    /* Ocultar botón colapsar en móvil */
+    .sh-sb-collapse-btn { display: none; }
+}

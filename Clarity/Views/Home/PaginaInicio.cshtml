@@ -18,9 +18,6 @@
 
         <div class="topbar-buttons">
 
-            <button id="themeToggle" class="btn-theme">
-                🌙 Modo Oscuro
-            </button>
 
             <a asp-controller="Home"
                asp-action="Index"
@@ -174,19 +171,3 @@
     </div>
 
 </div>
-
-<script>
-    const toggleBtn = document.getElementById("themeToggle");
-
-    toggleBtn.addEventListener("click", () => {
-
-        document.body.classList.toggle("light-mode");
-
-        if (document.body.classList.contains("light-mode")) {
-            toggleBtn.innerHTML = "☀️ Modo Claro";
-        } else {
-            toggleBtn.innerHTML = "🌙 Modo Oscuro";
-        }
-
-    });
-</script>
