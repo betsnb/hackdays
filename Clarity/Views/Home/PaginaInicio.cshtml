@@ -1,0 +1,192 @@
+@{
+    ViewData["Title"] = "Pagina Inicio";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/PaginaInicio.css" asp-append-version="true" />
+}
+
+<div class="dashboard-container">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+
+        <div>
+            <h1>Bienvenido de vuelta 👋</h1>
+            <p>Continúa tu camino de aprendizaje</p>
+        </div>
+
+        <div class="topbar-buttons">
+
+            <button id="themeToggle" class="btn-theme">
+                🌙 Modo Oscuro
+            </button>
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="btn-home">
+                Inicio
+            </a>
+
+        </div>
+
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-cards">
+
+        <div class="card-stat">
+            <div class="icon-card azul">📅</div>
+            <h2>8</h2>
+            <p>Eventos esta semana</p>
+        </div>
+
+        <div class="card-stat">
+            <div class="icon-card cyan">🧠</div>
+            <h2>12</h2>
+            <p>Tareas detectadas</p>
+        </div>
+
+        <div class="card-stat">
+            <div class="icon-card verde">📖</div>
+            <h2>7</h2>
+            <p>Quizzes completados</p>
+        </div>
+
+        <div class="card-stat">
+            <div class="icon-card morado">📈</div>
+            <h2>7 días</h2>
+            <p>Racha de estudio</p>
+        </div>
+
+    </div>
+
+    <!-- ALERTA -->
+    <div class="alerta-box">
+
+        <div class="alerta-header">
+            <span>⚠</span>
+            <h3>Alerta de Sobrecarga</h3>
+        </div>
+
+        <p>
+            Tienes <strong>3 tareas urgentes</strong> esta semana
+        </p>
+
+        <span>
+            Gemini detectó que podrías estar sobrecargado.
+            Considera reorganizar tu agenda.
+        </span>
+
+    </div>
+
+    <!-- GRID -->
+    <div class="dashboard-grid">
+
+        <!-- TAREAS -->
+        <div class="dashboard-card">
+
+            <div class="card-header">
+                <div class="header-icon azul">📅</div>
+                <h3>Tareas Detectadas</h3>
+            </div>
+
+            <div class="tasks-list">
+
+                <div class="task-item">
+
+                    <div class="task-dot rosa"></div>
+
+                    <div>
+                        <h4>Matemáticas - Examen Final</h4>
+
+                        <div class="task-bottom">
+                            <span>Mañana 10:00 AM</span>
+                            <span class="badge alta">Alta</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="task-item">
+
+                    <div class="task-dot cyan-dot"></div>
+
+                    <div>
+                        <h4>Historia - Proyecto de Grupo</h4>
+
+                        <div class="task-bottom">
+                            <span>En 3 días</span>
+                            <span class="badge media">Media</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="task-item">
+
+                    <div class="task-dot verde-dot"></div>
+
+                    <div>
+                        <h4>Química - Laboratorio</h4>
+
+                        <div class="task-bottom">
+                            <span>En 5 días</span>
+                            <span class="badge media">Media</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- HORARIO -->
+        <div class="dashboard-card">
+
+            <div class="card-header">
+                <div class="header-icon verde">📘</div>
+                <h3>Horario Inteligente</h3>
+            </div>
+
+            <div class="schedule-list">
+
+                <div class="schedule-item schedule-blue">
+                    <h4>09:00 - 11:00</h4>
+                    <p>Estudiar Matemáticas</p>
+                </div>
+
+                <div class="schedule-item schedule-cyan">
+                    <h4>14:00 - 16:00</h4>
+                    <p>Proyecto de Historia</p>
+                </div>
+
+                <div class="schedule-item schedule-green">
+                    <h4>18:00 - 19:30</h4>
+                    <p>Flashcards de Química</p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    const toggleBtn = document.getElementById("themeToggle");
+
+    toggleBtn.addEventListener("click", () => {
+
+        document.body.classList.toggle("light-mode");
+
+        if (document.body.classList.contains("light-mode")) {
+            toggleBtn.innerHTML = "☀️ Modo Claro";
+        } else {
+            toggleBtn.innerHTML = "🌙 Modo Oscuro";
+        }
+
+    });
+</script>
