@@ -22,6 +22,9 @@
 
         <div class="d-flex gap-2">
 
+            <button class="btn btn-outline-primary" style="border-color: #8A2BE2; color: #8A2BE2;" id="btnSmartReschedule">
+                ✦ Smart Reschedule
+            </button>
             <button class="btn btn-primary-custom"
                     onclick="modal.show()">
                 + Agregar Evento
@@ -476,10 +479,12 @@
         const day = new Date(ev.date + "T00:00:00").getDate();
 
         const dayBox = document.querySelector(`[data-day='${day}']`);
-        const eventDiv = document.createElement("div");
-        eventDiv.className = `event ${ev.color}`;
-        eventDiv.textContent = `${ev.time} ${ev.title}`;
-        dayBox.querySelector(".events-container").appendChild(eventDiv);
+        if(dayBox) {
+            const eventDiv = document.createElement("div");
+            eventDiv.className = `event ${ev.color}`;
+            eventDiv.textContent = `${ev.time} ${ev.title}`;
+            dayBox.querySelector(".events-container").appendChild(eventDiv);
+        }
 
         const card = document.createElement("div");
         card.className = "event-item fade-in";
@@ -504,5 +509,94 @@
     });
 
     updateCounter();
+
+    // =========================
+    // GEMINI SMART RESCHEDULE
+    // =========================
+    
+    document.getElementById('btnSmartReschedule').addEventListener('click', async function() {
+        const originalText = this.textContent;
+        this.textContent = "✨ Reagendando...";
+        this.disabled = true;
+
+        try {
+            // 1. Gather current tasks from localStorage
+            let tasks = [];
+            const rawData = localStorage.getItem('sh_ai_raw');
+            if(rawData) {
+                try {
+                    const parsed = JSON.parse(rawData);
+                    if(parsed && parsed.tasks) {
+                        tasks = parsed.tasks;
+                    }
+                } catch(e) {}
+            }
+
+            // 2. Gather fixed blocks (current events in DOM)
+            let fixedBlocks = [];
+            document.querySelectorAll('.event-item').forEach(card => {
+                fixedBlocks.push({
+                    title: card.dataset.title,
+                    time: card.dataset.time,
+                    day: card.dataset.day
+                });
+            });
+
+            // 3. Call Gemini
+            const burnoutScore = localStorage.getItem('sh_burnout') ? parseInt(localStorage.getItem('sh_burnout')) : 5;
+            
+            const result = await window.ClarityAI.smartReschedule({
+                tasks: tasks,
+                fixedBlocks: fixedBlocks,
+                burnout: burnoutScore
+            });
+
+            // 4. Render new schedule (for this demo we add them to today/tomorrow)
+            if(result && result.new_schedule) {
+                const today = new Date().getDate(); // Simplified: just add to current day
+                
+                result.new_schedule.forEach(item => {
+                    // Create visual event
+                    const dayBox = document.querySelector(`[data-day='${today}']`);
+                    if(dayBox) {
+                        const eventDiv = document.createElement("div");
+                        eventDiv.className = `event pink`; // AI color
+                        eventDiv.textContent = `✨ ${item.time.split(' - ')[0]} ${item.task_title || item.title}`;
+                        dayBox.querySelector(".events-container").appendChild(eventDiv);
+                    }
+                    
+                    // Add to list
+                    const card = document.createElement("div");
+                    card.className = "event-item fade-in ai-generated";
+                    card.dataset.day = today;
+                    card.dataset.title = item.task_title || item.title;
+                    card.dataset.time = item.time;
+
+                    card.innerHTML = `
+                        <div class="event-left">
+                            <div class="line pink-line"></div>
+                            <div>
+                                <h5>✨ ${item.task_title || item.title} <span class="badge bg-purple" style="font-size: 0.6em; margin-left: 5px;">IA</span></h5>
+                                <p>Hoy - ${item.time}</p>
+                                <small>📍 Smart Scheduled (${item.type || 'study'})</small>
+                            </div>
+                        </div>
+                        <button class="delete-btn" onclick="deleteEvent(this)">✕</button>
+                    `;
+                    document.getElementById("eventsList").prepend(card);
+                });
+                
+                updateCounter();
+                alert("✨ Tu horario ha sido rebalanceado de manera inteligente.");
+            }
+            
+        } catch(error) {
+            console.error("Reschedule error:", error);
+            alert("No se pudo reagendar con IA en este momento.");
+        } finally {
+            this.textContent = originalText;
+            this.disabled = false;
+        }
+    });
 
 </script>

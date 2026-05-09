@@ -2,6 +2,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<Clarity.Services.GeminiService>();
 
 builder.Services.AddSession(options => {
     options.IdleTimeout = TimeSpan.FromHours(2);

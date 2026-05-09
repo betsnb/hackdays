@@ -161,9 +161,13 @@
             <div class="tipo-btn selected-pink" onclick="selectTipo(this)"><span class="tipo-icon">📄</span>PDF</div>
         </div>
 
-        <div class="dropzone" onclick="document.getElementById('fileInput').click()">
+        <div class="mb-3">
+            <input type="text" id="flashcardTopic" class="form-control mb-2 mt-2" placeholder="Ej. Revolución Industrial, Derivadas, etc." style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;">
+        </div>
+
+        <div class="dropzone" id="estudiarDropzone" onclick="document.getElementById('fileInput').click()">
             <div class="dropzone-icon">⬆</div>
-            <p class="dropzone-text">Seleccionar archivo</p>
+            <p class="dropzone-text" id="dropzoneText">Seleccionar archivo</p>
             <p class="dropzone-hint">Imágenes, PDF, TXT, DOC hasta 10MB</p>
             <input type="file" id="fileInput" style="display:none" accept=".pdf,.png,.jpg,.txt,.doc,.docx">
         </div>

@@ -1,4 +1,4 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
+// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
@@ -28,7 +28,9 @@
     function applyTheme(theme) {
         html.setAttribute('data-theme', theme);
         localStorage.setItem(STORAGE_KEY, theme);
-        themeLabel.textContent = theme === 'dark' ? 'Modo claro' : 'Modo oscuro';
+        if (themeLabel) {
+            themeLabel.textContent = theme === 'dark' ? 'Modo claro' : 'Modo oscuro';
+        }
     }
 
     /* ---- Tabs ---- */
@@ -239,18 +241,35 @@
         document.body.style.overflow = '';
     }
 
-    const onboardingSteps = 5;
+    const onboardingSteps = 4;
     let currentStep = 1;
-    const onboardingData = {};
+    const onboardingData = {
+        nombre: '',
+        role: '',
+        bio: '',
+        files: []
+    };
 
     // Tags (paso 3)
     let tags = [];
 
     function goToStep(step) {
         currentStep = step;
+        const wrap = document.querySelector('.sh-ob-wrap');
+        
         document.querySelectorAll('.sh-ob-step').forEach(function(s) {
             s.classList.toggle('active', parseInt(s.dataset.step) === step);
         });
+
+        if (step === 4) {
+            const name = onboardingData.nombre || 'friend';
+            document.getElementById('ob-greeting').textContent = `Hey ${name} — what does this week look like?`;
+            updateInputCount();
+            if (wrap) wrap.classList.add('wide');
+        } else {
+            if (wrap) wrap.classList.remove('wide');
+        }
+
         // Progress bar
         const pct = ((step - 1) / onboardingSteps) * 100;
         document.getElementById('ob-progress-bar').style.width = pct + '%';
@@ -258,104 +277,264 @@
         document.getElementById('ob-back').style.visibility = step > 1 ? 'visible' : 'hidden';
     }
 
+    function updateInputCount() {
+        const count = onboardingData.files.length + (document.getElementById('ob-text-input').value.trim() ? 1 : 0);
+        const countLabel = document.getElementById('ob-input-count');
+        const btnCount = document.getElementById('ob-btn-count');
+        if (countLabel) countLabel.textContent = `${count} INPUTS`;
+        if (btnCount) btnCount.textContent = count;
+    }
+
     function nextStep() {
-        // Validar paso actual
         if (currentStep === 1) {
             const v = document.getElementById('ob-nombre').value.trim();
             if (!v) { document.getElementById('ob-nombre').focus(); return; }
             onboardingData.nombre = v;
         }
         if (currentStep === 2) {
-            const sel = document.querySelector('.ob-option-btn.selected');
-            if (!sel) return;
-            onboardingData.nivel = sel.dataset.value;
+            if (!onboardingData.role) {
+                alert('Por favor selecciona un rol para continuar.');
+                return;
+            }
         }
         if (currentStep === 3) {
-            onboardingData.materias = tags;
+            onboardingData.bio = document.getElementById('ob-bio').value.trim();
         }
         if (currentStep === 4) {
-            onboardingData.horas = document.getElementById('ob-slider').value;
-        }
-        if (currentStep === 5) {
-            const sel = document.querySelector('.ob-goal-card.selected');
-            if (!sel) return;
-            onboardingData.objetivo = sel.dataset.value;
             showFinish();
             return;
         }
         goToStep(currentStep + 1);
     }
 
-    function showFinish() {
+    // --- AI Wrapper (ClarityAI) ---
+    window.ClarityAI = {
+        async extractTasksFromUpload({ files, text, persona }) {
+            const response = await fetch('/api/ai/extract', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ Persona: persona, Text: text, Files: files })
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || "Error en el backend");
+            if (!data.response) throw new Error("Gemini no devolvió respuesta");
+            return JSON.parse(data.response.replace(/```json/g, '').replace(/```/g, '').trim());
+        },
+
+        async dailyBriefing({ name, role, tasks, burnout }) {
+            const response = await fetch('/api/ai/briefing', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    Persona: { Name: name, Role: role, Activities: "" }, 
+                    Tasks: tasks, 
+                    Burnout: burnout 
+                })
+            });
+            const data = await response.json();
+            return JSON.parse(data.response.replace(/```json/g, '').replace(/```/g, '').trim());
+        },
+
+        async explainTask(task) {
+            const response = await fetch('/api/ai/explain', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ Task: task })
+            });
+            const data = await response.json();
+            return JSON.parse(data.response.replace(/```json/g, '').replace(/```/g, '').trim());
+        },
+
+        async generateFlashcards(topic, files = []) {
+            const response = await fetch('/api/ai/flashcards', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ Topic: topic, Files: files })
+            });
+            const data = await response.json();
+            return JSON.parse(data.response.replace(/```json/g, '').replace(/```/g, '').trim());
+        },
+
+        async smartReschedule({ tasks, fixedBlocks, burnout }) {
+            const response = await fetch('/api/ai/reschedule', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ Tasks: tasks, FixedBlocks: fixedBlocks, Burnout: burnout })
+            });
+            const data = await response.json();
+            return JSON.parse(data.response.replace(/```json/g, '').replace(/```/g, '').trim());
+        }
+    };
+
+    async function showFinish() {
         document.querySelectorAll('.sh-ob-step').forEach(function(s){ s.classList.remove('active'); });
         document.getElementById('ob-finish').classList.add('active');
         document.getElementById('ob-progress-bar').style.width = '100%';
         document.getElementById('ob-footer').style.display = 'none';
+
+        // Pipeline Stages Animation
+        const stages = ['pipe-vision', 'pipe-extract', 'pipe-rank', 'pipe-schedule'];
+        for (let i = 0; i < stages.length; i++) {
+            const el = document.getElementById(stages[i]);
+            if (el) el.classList.add('active');
+            await new Promise(r => setTimeout(r, 800));
+        }
+
+        try {
+            const persona = {
+                Name: onboardingData.nombre,
+                Role: onboardingData.role,
+                Activities: onboardingData.bio
+            };
+            const textInput = document.getElementById('ob-text-input').value.trim();
+            const files = onboardingData.files.map(f => ({ mimeType: f.type, data: f.base64 }));
+
+            // Usando el wrapper oficial
+            const parsed = await window.ClarityAI.extractTasksFromUpload({ files, text: textInput, persona });
+            
+            localStorage.setItem('sh_ai_raw', JSON.stringify(parsed));
+            localStorage.setItem('sh_user_name', onboardingData.nombre);
+            localStorage.setItem('sh_ai_plan', parsed.summary || 'Listo para empezar.');
+            
+        } catch (error) {
+            console.error('Error llamando a Gemini:', error);
+            localStorage.setItem('sh_ai_plan', 'Información procesada, ¡revisa tu dashboard!');
+            alert("Error procesando tus datos con Gemini: " + error.message);
+        }
+
         setTimeout(function() {
             window.location.href = '/Home/PaginaInicio';
-        }, 2800);
+        }, 1000);
     }
 
-    // Opción pills (paso 2)
-    document.querySelectorAll('.ob-option-btn').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            this.closest('.ob-options').querySelectorAll('.ob-option-btn').forEach(function(b){ b.classList.remove('selected'); });
-            this.classList.add('selected');
-        });
-    });
-
-    // Goal cards (paso 5)
-    document.querySelectorAll('.ob-goal-card').forEach(function(card) {
+    // Role Selection
+    document.querySelectorAll('.ob-persona-card').forEach(function(card) {
         card.addEventListener('click', function() {
-            document.querySelectorAll('.ob-goal-card').forEach(function(c){ c.classList.remove('selected'); });
+            document.querySelectorAll('.ob-persona-card').forEach(c => c.classList.remove('selected'));
             this.classList.add('selected');
+            onboardingData.role = this.dataset.role;
         });
     });
 
-    // Tags (paso 3)
-    const tagInput = document.getElementById('ob-tag-input');
-    const tagContainer = document.getElementById('ob-tags');
-    const TAG_SUGGESTIONS = ['Matemáticas','Física','Química','Programación','Historia','Inglés','Biología','Cálculo','Estadística','Literatura'];
-
-    function addTag(val) {
-        val = val.trim();
-        if (!val || tags.includes(val)) return;
-        tags.push(val);
-        const chip = document.createElement('span');
-        chip.className = 'ob-tag';
-        chip.innerHTML = val + ' <button class="ob-tag-remove" data-tag="' + val + '">×</button>';
-        tagContainer.insertBefore(chip, tagInput);
-        chip.querySelector('.ob-tag-remove').addEventListener('click', function() {
-            tags = tags.filter(function(t){ return t !== val; });
-            chip.remove();
-        });
-    }
-
-    if (tagInput) {
-        tagInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' || e.key === ',') {
-                e.preventDefault();
-                addTag(this.value);
-                this.value = '';
-            }
-        });
-    }
-
-    // Sugerencias de tags
+    // Tag Suggestions
     document.querySelectorAll('.ob-tag-suggestion').forEach(function(s) {
         s.addEventListener('click', function() {
-            addTag(this.textContent);
+            const bio = document.getElementById('ob-bio');
+            const val = this.textContent.replace('+ ', '');
+            if (!bio.value.includes(val)) {
+                bio.value += (bio.value ? ', ' : '') + val;
+            }
         });
     });
 
-    // Slider label
-    const slider = document.getElementById('ob-slider');
-    const sliderVal = document.getElementById('ob-slider-val');
-    if (slider) {
-        slider.addEventListener('input', function() {
-            sliderVal.textContent = this.value + (this.value == 1 ? ' hora' : ' horas');
+    // File Upload Handling
+    const dropZone = document.getElementById('ob-drop-zone');
+    const fileInput = document.getElementById('ob-file-input');
+
+    if (dropZone) {
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragging');
+        });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragging'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragging');
+            handleFiles(e.dataTransfer.files);
         });
     }
+
+    if (fileInput) {
+        fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+    }
+
+    // Tabs
+    document.querySelectorAll('.ob-tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.ob-tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.ob-tab-content').forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            document.getElementById(`tab-${this.dataset.tab}`).classList.add('active');
+        });
+    });
+
+    // Text Input Counter
+    const textInput = document.getElementById('ob-text-input');
+    if (textInput) {
+        textInput.addEventListener('input', updateInputCount);
+    }
+
+    // Analyze Button
+    const analyzeBtn = document.getElementById('ob-analyze-btn');
+    if (analyzeBtn) {
+        analyzeBtn.addEventListener('click', showFinish);
+    }
+
+    // Sample Loader
+    const loadSampleBtn = document.getElementById('ob-load-sample');
+    if (loadSampleBtn) {
+        loadSampleBtn.addEventListener('click', function() {
+            onboardingData.files = [
+                { name: 'fall-2026-syllabus.pdf', type: 'application/pdf', base64: '' },
+                { name: 'canvas-week.png', type: 'image/png', base64: '' }
+            ];
+            const textInput = document.getElementById('ob-text-input');
+            textInput.value = "Midterm on Friday for Physics. Read Chapter 5 by Wednesday.";
+            renderFileList();
+            updateInputCount();
+            alert("Sample data loaded! Click Analyze to continue.");
+        });
+    }
+
+    function renderFileList() {
+        const fileList = document.getElementById('ob-file-list');
+        fileList.innerHTML = '';
+        onboardingData.files.forEach((f, idx) => {
+            const item = document.createElement('div');
+            item.className = 'ob-file-item';
+            item.innerHTML = `
+                <div style="display:flex; align-items:center; gap:0.8rem;">
+                    <div style="background:rgba(255,255,255,0.05); padding:0.4rem; border-radius:6px;">📄</div>
+                    <div>
+                        <p style="font-weight:600; font-size:0.85rem;">${f.name}</p>
+                        <p style="font-size:0.7rem; opacity:0.5;">${f.type}</p>
+                    </div>
+                </div>
+                <button class="ob-file-remove" data-idx="${idx}" style="background:transparent; border:none; color:var(--text-muted); cursor:pointer;">×</button>
+            `;
+            fileList.appendChild(item);
+        });
+
+        document.querySelectorAll('.ob-file-remove').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const idx = parseInt(this.dataset.idx);
+                onboardingData.files.splice(idx, 1);
+                renderFileList();
+                updateInputCount();
+            });
+        });
+    }
+
+    async function handleFiles(files) {
+        for (const file of files) {
+            const base64 = await toBase64(file);
+            onboardingData.files.push({
+                name: file.name,
+                type: file.type,
+                base64: base64.split(',')[1]
+            });
+        }
+        renderFileList();
+        updateInputCount();
+    }
+
+    const toBase64 = file => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
 
     // Botones nav del modal
     const btnNext = document.getElementById('ob-next');
