@@ -18,9 +18,48 @@ public class HomeController : Controller
         return View();
     }
     
+    private static List<Clarity.Models.Flashcard> _flashcards = new()
+    {
+        new() { Id = 1, Pregunta = "¿Qué es la derivada de una función?",   Respuesta = "La tasa de cambio instantánea de una función en un punto dado, representada como f'(x) o dy/dx.", Materia = "Matemáticas" },
+        new() { Id = 2, Pregunta = "¿Cuándo inició la Revolución Industrial?", Respuesta = "A mediados del siglo XVIII en Gran Bretaña, extendiéndose luego al resto de Europa.", Materia = "Historia" },
+    };
+    private static int _nextId = 3;
+    
+    // GET /Home/Estudiar
     public IActionResult Estudiar()
     {
-        return View();
+        ViewData["ActivePage"] = "Estudiar";
+        var vm = new Clarity.Models.EstudiarViewModel
+        {
+            Flashcards = _flashcards
+        };
+        return View(vm);
+    }
+    
+    // POST /Home/AgregarFlashcard
+    [HttpPost]
+    public IActionResult AgregarFlashcard(string pregunta, string respuesta, string materia)
+    {
+        if (!string.IsNullOrWhiteSpace(pregunta) && !string.IsNullOrWhiteSpace(respuesta))
+        {
+            _flashcards.Add(new Clarity.Models.Flashcard
+            {
+                Id       = _nextId++,
+                Pregunta = pregunta.Trim(),
+                Respuesta = respuesta.Trim(),
+                Materia  = string.IsNullOrWhiteSpace(materia) ? "General" : materia.Trim()
+            });
+        }
+        return RedirectToAction("Estudiar");
+    }
+    
+    // POST /Home/EliminarFlashcard
+    [HttpPost]
+    public IActionResult EliminarFlashcard(int id)
+    {
+        var fc = _flashcards.FirstOrDefault(f => f.Id == id);
+        if (fc != null) _flashcards.Remove(fc);
+        return RedirectToAction("Estudiar");
     }
     public IActionResult PaginaInicio()
     {
