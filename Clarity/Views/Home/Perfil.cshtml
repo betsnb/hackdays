@@ -1,0 +1,238 @@
+@model Clarity.Models.PerfilViewModel
+@{
+    ViewData["Title"] = "Mi Perfil";
+    ViewData["ActivePage"] = "Perfil";
+    bool guardado = TempData["Guardado"]?.ToString() == "true";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Perfil.css" asp-append-version="true" />
+}
+
+<div class="perfil-container">
+
+    @if (guardado)
+    {
+        <div class="toast-guardado" id="toastGuardado">
+            <span>✓</span> Cambios guardados correctamente
+        </div>
+    }
+
+    <!-- HEADER -->
+    <div class="perfil-header">
+        <div>
+            <h1 class="perfil-title">Mi Perfil</h1>
+            <p class="perfil-sub">Gestiona tu información académica</p>
+        </div>
+        <!-- Botón editar (solo visible cuando NO estamos editando) -->
+        <button class="btn-editar" id="btnEditar" type="button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            Editar perfil
+        </button>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" asp-action="Perfil" asp-controller="Home" id="perfilForm">
+
+        <!-- CARD USUARIO -->
+        <div class="perfil-card">
+
+            <!-- Avatar section -->
+            <div class="avatar-section">
+                <div class="avatar-wrap" id="avatarWrap">
+                    @if (!string.IsNullOrEmpty(Model.FotoRuta))
+                    {
+                        <img src="@Model.FotoRuta" alt="Foto de perfil" class="avatar-img" id="avatarPreview" />
+                    }
+                    else
+                    {
+                        <div class="avatar-placeholder" id="avatarPlaceholder">
+                            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
+                        <img src="" alt="Foto de perfil" class="avatar-img" id="avatarPreview" style="display:none" />
+                    }
+                    <!-- Overlay de cámara (solo en modo edición) -->
+                    <label class="avatar-overlay" for="fotoInput" id="avatarOverlay" style="display:none">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                            <circle cx="12" cy="13" r="4"></circle>
+                        </svg>
+                        <span>Cambiar</span>
+                    </label>
+                    <input type="file" id="fotoInput" name="fotoPerfil" accept="image/*" style="display:none" />
+                </div>
+
+                <div class="avatar-info">
+                    <h2 class="avatar-nombre">@Model.NombreCompleto</h2>
+                    <p class="avatar-carrera">@Model.Carrera</p>
+                    <span class="avatar-badge">Estudiante activo</span>
+                </div>
+            </div>
+
+            <div class="perfil-divider"></div>
+
+            <!-- Campos -->
+            <div class="campos-grid">
+
+                <div class="campo-group">
+                    <label class="campo-label">Nombre Completo</label>
+                    <div class="campo-wrap">
+                        <input type="text" name="NombreCompleto" value="@Model.NombreCompleto"
+                               class="campo-input" readonly id="inputNombre" />
+                    </div>
+                </div>
+
+                <div class="campo-group">
+                    <label class="campo-label">Correo Electrónico</label>
+                    <div class="campo-wrap">
+                        <svg class="campo-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        <input type="email" name="Correo" value="@Model.Correo"
+                               class="campo-input has-icon" readonly id="inputCorreo" />
+                    </div>
+                </div>
+
+                <div class="campo-group">
+                    <label class="campo-label">Universidad / Escuela</label>
+                    <div class="campo-wrap">
+                        <input type="text" name="Universidad" value="@Model.Universidad"
+                               class="campo-input" readonly id="inputUniversidad" />
+                    </div>
+                </div>
+
+                <div class="campo-group">
+                    <label class="campo-label">Carrera</label>
+                    <div class="campo-wrap">
+                        <input type="text" name="Carrera" value="@Model.Carrera"
+                               class="campo-input" readonly id="inputCarrera" />
+                    </div>
+                </div>
+
+                <div class="campo-group">
+                    <label class="campo-label">Año Académico</label>
+                    <div class="campo-wrap">
+                        <input type="text" name="AnoAcademico" value="@Model.AnoAcademico"
+                               class="campo-input" readonly id="inputAno" />
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Botones de acción (solo en modo edición) -->
+            <div class="acciones-edicion" id="accionesEdicion" style="display:none">
+                <button type="button" class="btn-cancelar" id="btnCancelar">Cancelar</button>
+                <button type="submit" class="btn-guardar">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    Guardar cambios
+                </button>
+            </div>
+
+        </div>
+
+        <!-- CARD LOGROS -->
+        <div class="perfil-card logros-card">
+            <h3 class="logros-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="8" r="6"></circle>
+                    <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"></path>
+                </svg>
+                Logros
+            </h3>
+            <div class="logros-grid">
+                <div class="logro-item logro-azul">
+                    <div class="logro-icon">🏅</div>
+                    <div>
+                        <div class="logro-nombre">Estudiante Destacado</div>
+                        <div class="logro-desc">Top 10% del semestre</div>
+                    </div>
+                </div>
+                <div class="logro-item logro-verde">
+                    <div class="logro-icon">🔥</div>
+                    <div>
+                        <div class="logro-nombre">100 Días de Racha</div>
+                        <div class="logro-desc">Constancia ejemplar</div>
+                    </div>
+                </div>
+                <div class="logro-item logro-cyan">
+                    <div class="logro-icon">🎓</div>
+                    <div>
+                        <div class="logro-nombre">50 Quizzes Completados</div>
+                        <div class="logro-desc">Maestro del repaso</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+
+</div>
+
+@section Scripts {
+<script>
+(function () {
+    const btnEditar   = document.getElementById('btnEditar');
+    const btnCancelar = document.getElementById('btnCancelar');
+    const acciones    = document.getElementById('accionesEdicion');
+    const avatarOverlay = document.getElementById('avatarOverlay');
+    const fotoInput   = document.getElementById('fotoInput');
+    const avatarPreview = document.getElementById('avatarPreview');
+    const avatarPlaceholder = document.getElementById('avatarPlaceholder');
+
+    // Todos los inputs de texto
+    const inputs = document.querySelectorAll('.campo-input');
+
+    // Valores originales para cancelar
+    const originales = Array.from(inputs).map(i => i.value);
+
+    function activarEdicion() {
+        inputs.forEach(i => i.removeAttribute('readonly'));
+        acciones.style.display = 'flex';
+        avatarOverlay.style.display = 'flex';
+        btnEditar.style.display = 'none';
+        document.querySelector('.perfil-card').classList.add('modo-edicion');
+    }
+
+    function cancelarEdicion() {
+        inputs.forEach((i, idx) => {
+            i.setAttribute('readonly', '');
+            i.value = originales[idx];
+        });
+        acciones.style.display = 'none';
+        avatarOverlay.style.display = 'none';
+        btnEditar.style.display = 'flex';
+        document.querySelector('.perfil-card').classList.remove('modo-edicion');
+    }
+
+    btnEditar.addEventListener('click', activarEdicion);
+    btnCancelar.addEventListener('click', cancelarEdicion);
+
+    // Preview de foto
+    fotoInput.addEventListener('change', function () {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                avatarPreview.src = e.target.result;
+                avatarPreview.style.display = 'block';
+                if (avatarPlaceholder) avatarPlaceholder.style.display = 'none';
+            };
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+
+    // Toast auto-hide
+    const toast = document.getElementById('toastGuardado');
+    if (toast) {
+        setTimeout(() => toast.classList.add('toast-hide'), 3000);
+    }
+})();
+</script>
+}
