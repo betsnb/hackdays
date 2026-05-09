@@ -28,7 +28,9 @@
     function applyTheme(theme) {
         html.setAttribute('data-theme', theme);
         localStorage.setItem(STORAGE_KEY, theme);
-        themeLabel.textContent = theme === 'dark' ? 'Modo claro' : 'Modo oscuro';
+        if (themeLabel) {
+            themeLabel.textContent = theme === 'dark' ? 'Modo claro' : 'Modo oscuro';
+        }
     }
 
     /* ---- Tabs ---- */

@@ -63,15 +63,18 @@
 
         <div class="alerta-header">
             <span>✦</span>
-            <h3>Tu Plan Personalizado (Gemini)</h3>
+            <h3>Tu Briefing Diario (Gemini)</h3>
         </div>
 
         <p id="ai-plan-text" style="font-style: italic; line-height: 1.6;">
-            Cargando tu plan inteligente...
+            Cargando tu briefing inteligente...
         </p>
 
-        <span style="font-size: 0.85rem; opacity: 0.8;">
-            Basado en tus preferencias de onboarding.
+        <p id="ai-plan-focus" style="font-weight: 600; margin-top: 10px; color: #fff;">
+        </p>
+
+        <span style="font-size: 0.85rem; opacity: 0.8;" id="ai-plan-tone">
+            Analizando tu carga de trabajo...
         </span>
 
     </div>
@@ -134,41 +137,55 @@
 
 <script src="~/js/site.js"></script>
 <script>
-    const toggleBtn = document.getElementById("themeToggle");
 
-    toggleBtn.addEventListener("click", () => {
-
-        document.body.classList.toggle("light-mode");
-
-        if (document.body.classList.contains("light-mode")) {
-            toggleBtn.innerHTML = "☀️ Modo Claro";
-        } else {
-            toggleBtn.innerHTML = "🌙 Modo Oscuro";
-        }
-
-    });
 
     // Cargar datos de Onboarding / Gemini
-    window.addEventListener('DOMContentLoaded', () => {
+    window.addEventListener('DOMContentLoaded', async () => {
         const userName = localStorage.getItem('sh_user_name');
-        const aiPlan = localStorage.getItem('sh_ai_plan');
+        const role = localStorage.getItem('sh_role') || 'estudiante';
+        const rawData = localStorage.getItem('sh_ai_raw');
+        const burnout = localStorage.getItem('sh_burnout') ? parseInt(localStorage.getItem('sh_burnout')) : 5;
 
         if (userName) {
             document.getElementById('welcome-msg').textContent = `¡Hola, ${userName}! 👋`;
         }
 
-        if (aiPlan) {
-            document.getElementById('ai-plan-text').textContent = aiPlan;
-        } else {
-            document.getElementById('ai-plan-text').textContent = "Aún no has generado un plan personalizado. ¡Vuelve al inicio para comenzar el onboarding!";
+        let parsed = {};
+        if(rawData) {
+            try {
+                parsed = JSON.parse(rawData);
+            } catch(e) {}
         }
 
-        // Renderizar tareas dinámicas
-        const rawData = localStorage.getItem('sh_ai_raw');
+        // Llamar a Gemini Daily Briefing
+        try {
+            const tasksToSend = parsed.tasks ? parsed.tasks.slice(0, 5) : []; // Send top 5 to avoid huge payloads
+            const briefing = await window.ClarityAI.dailyBriefing({
+                name: userName || 'Estudiante',
+                role: role,
+                tasks: tasksToSend,
+                burnout: burnout
+            });
+
+            if (briefing) {
+                if (briefing.greeting) document.getElementById('welcome-msg').textContent = briefing.greeting;
+                if (briefing.summary) document.getElementById('ai-plan-text').textContent = briefing.summary;
+                if (briefing.focus) document.getElementById('ai-plan-focus').innerHTML = `<strong>🎯 Foco de hoy:</strong> ${briefing.focus}`;
+                if (briefing.tone) document.getElementById('ai-plan-tone').textContent = `Tono detectado: ${briefing.tone}`;
+            }
+        } catch (error) {
+            console.error("Error fetching daily briefing:", error);
+            const aiPlan = localStorage.getItem('sh_ai_plan');
+            if (aiPlan) {
+                document.getElementById('ai-plan-text').textContent = aiPlan;
+            } else {
+                document.getElementById('ai-plan-text').textContent = "Aún no has generado un plan personalizado. ¡Vuelve al inicio para comenzar el onboarding!";
+            }
+            document.getElementById('ai-plan-tone').textContent = "Basado en tus preferencias de onboarding (Fallback)";
+        }
+
         if (rawData) {
             try {
-                const parsed = JSON.parse(rawData);
-                
                 // Actualizar Stats
                 if (parsed.tasks) {
                     document.getElementById('stat-tasks').textContent = parsed.tasks.length;

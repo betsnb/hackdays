@@ -253,9 +253,13 @@
             </div>
         </div>
 
-        <div class="dropzone" onclick="document.getElementById('fileInput').click()">
+        <div class="mb-3">
+            <input type="text" id="flashcardTopic" class="form-control mb-2 mt-2" placeholder="Ej. Revolución Industrial, Derivadas, etc." style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white;">
+        </div>
+
+        <div class="dropzone" id="estudiarDropzone" onclick="document.getElementById('fileInput').click()">
             <div class="dropzone-icon">⬆</div>
-            <p class="dropzone-text">Seleccionar archivo</p>
+            <p class="dropzone-text" id="dropzoneText">Seleccionar archivo</p>
             <p class="dropzone-hint">Imágenes, PDF, TXT, DOC hasta 10MB</p>
             <input type="file" id="fileInput" style="display:none" accept=".pdf,.png,.jpg,.txt,.doc,.docx">
         </div>
@@ -274,7 +278,7 @@
 
         <div class="modal-footer-btns">
             <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
-            <button class="btn-analizar">✦ Analizar con Gemini</button>
+            <button class="btn-analizar" id="btnAnalizarEstudio">✦ Analizar con Gemini</button>
         </div>
 
     </div>
@@ -462,5 +466,198 @@
 
     // Iniciar quiz al cargar
     startQuiz();
+
+    // ========================
+    // GEMINI INTEGRATION
+    // ========================
+    
+    let uploadedFile = null;
+    
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+        if(e.target.files && e.target.files[0]) {
+            uploadedFile = e.target.files[0];
+            document.getElementById('dropzoneText').textContent = uploadedFile.name;
+        }
+    });
+
+    const toBase64 = file => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+
+    document.getElementById('btnAnalizarEstudio').addEventListener('click', async function() {
+        const topic = document.getElementById('flashcardTopic').value.trim();
+        
+        if(!topic && !uploadedFile) {
+            alert("Por favor ingresa un tema o sube un archivo.");
+            return;
+        }
+
+        const originalText = this.textContent;
+        this.textContent = "✨ Analizando...";
+        this.disabled = true;
+
+        try {
+            let filesPayload = [];
+            if(uploadedFile) {
+                const b64 = await toBase64(uploadedFile);
+                filesPayload.push({
+                    mimeType: uploadedFile.type || "application/octet-stream",
+                    data: b64.split(',')[1]
+                });
+            }
+
+            // Determinar qué tipo de análisis hacer basado en el tipo seleccionado en la UI
+            const selectedBtn = document.querySelector('.tipo-btn.selected') || document.querySelector('.tipo-btn.selected-pink');
+            const typeText = selectedBtn ? selectedBtn.textContent.trim().toLowerCase() : '';
+
+            if (typeText.includes('screenshot') || typeText.includes('horario') || typeText.includes('mensajes')) {
+                // Es una lista de tareas/horario
+                const persona = {
+                    Name: localStorage.getItem('sh_user_name') || 'Estudiante',
+                    Role: localStorage.getItem('sh_role') || 'Estudiante',
+                    Activities: ''
+                };
+                
+                const taskData = await window.ClarityAI.extractTasksFromUpload({
+                    files: filesPayload,
+                    text: topic,
+                    persona: persona
+                });
+
+                // Renderizar tareas y cambiar a ese tab
+                renderTasks(taskData.tasks || []);
+                
+                // Guardar en localStorage para que el dashboard y calendario las vean
+                const existingData = localStorage.getItem('sh_ai_raw');
+                if (existingData) {
+                    try {
+                        let parsed = JSON.parse(existingData);
+                        parsed.tasks = [...(parsed.tasks || []), ...(taskData.tasks || [])];
+                        localStorage.setItem('sh_ai_raw', JSON.stringify(parsed));
+                    } catch(e) {}
+                } else {
+                    localStorage.setItem('sh_ai_raw', JSON.stringify(taskData));
+                }
+
+                switchTab('tareas', document.querySelectorAll('.tab-btn')[0]);
+
+            } else {
+                // Es material de estudio (PDF, Notas), generamos flashcards
+                const flashcards = await window.ClarityAI.generateFlashcards(topic || "Resumen general del archivo", filesPayload);
+                
+                // Render flashcards
+                renderFlashcards(flashcards);
+                
+                // Switch tab
+                switchTab('flashcards', document.querySelectorAll('.tab-btn')[1]);
+            }
+            
+            closeModal();
+            
+        } catch(error) {
+            console.error("Gemini Error:", error);
+            alert("Hubo un error al procesar el documento con Gemini.");
+        } finally {
+            this.textContent = originalText;
+            this.disabled = false;
+        }
+    });
+
+    function renderTasks(tasksArray) {
+        const tabTareas = document.getElementById('tab-tareas');
+        tabTareas.innerHTML = ''; // Limpiar
+        
+        if (!tasksArray || tasksArray.length === 0) {
+            tabTareas.innerHTML = '<p style="padding: 20px; opacity: 0.6;">No se detectaron tareas.</p>';
+            return;
+        }
+
+        tasksArray.forEach(task => {
+            // Asignar colores según prioridad
+            let badgeClass = 'badge-media';
+            let cardClass = 'media';
+            if (task.priority === 'critical' || task.priority === 'high') {
+                badgeClass = 'badge-urgente';
+                cardClass = 'urgente';
+            } else if (task.priority === 'low') {
+                badgeClass = 'badge-alta';
+                cardClass = 'alta'; // Reusando la clase alta pero para low
+            }
+
+            const html = `
+            <div class="tarea-card ${cardClass}">
+                <div class="tarea-header">
+                    <div>
+                        <p class="tarea-title">${task.title}</p>
+                        <p class="tarea-desc">${task.course || task.task_type || 'Tarea generada'}</p>
+                    </div>
+                    <span class="${badgeClass}">${task.priority}</span>
+                </div>
+                <div class="tarea-meta">
+                    <div class="meta-item">
+                        <span class="meta-icon">⚠️</span>
+                        <div>
+                            <span class="meta-label">Prioridad</span>
+                            <span class="meta-value">${task.priority}</span>
+                        </div>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-icon">📅</span>
+                        <div>
+                            <span class="meta-label">Fecha límite</span>
+                            <span class="meta-value">${task.due_date || 'Sin fecha'}</span>
+                        </div>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-icon">🕐</span>
+                        <div>
+                            <span class="meta-label">Tiempo estimado</span>
+                            <span class="meta-value">${task.estimated_hours || 1} horas</span>
+                        </div>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-icon">🔍</span>
+                        <div>
+                            <span class="meta-label">Detectado de</span>
+                            <span class="meta-value">${task.found_in || 'Archivo'}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+            tabTareas.innerHTML += html;
+        });
+
+        document.querySelectorAll('.tab-btn')[0].textContent = `Tareas Detectadas (${tasksArray.length})`;
+    }
+
+    function renderFlashcards(flashcardsArray) {
+        const grid = document.querySelector('.flashcards-grid');
+        grid.innerHTML = ''; // Limpiar pre-existentes
+        
+        flashcardsArray.forEach(fc => {
+            const cardHtml = `
+            <div class="flashcard-wrapper" onclick="flipCard(this)">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">
+                        <p class="flashcard-q">Pregunta ${fc.tag ? '<span class="badge bg-secondary">'+fc.tag+'</span>' : ''}</p>
+                        <p class="flashcard-text">${fc.q}</p>
+                        <p class="flashcard-hint">👆 Clic para voltear</p>
+                    </div>
+                    <div class="flashcard-back">
+                        <p class="flashcard-q">Respuesta</p>
+                        <p class="flashcard-text">${fc.a}</p>
+                        <p class="flashcard-hint">👆 Clic para voltear</p>
+                    </div>
+                </div>
+            </div>`;
+            grid.innerHTML += cardHtml;
+        });
+        
+        // Update tab count
+        document.querySelectorAll('.tab-btn')[1].textContent = `Flashcards (${flashcardsArray.length})`;
+    }
 
 </script>
