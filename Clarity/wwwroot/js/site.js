@@ -220,7 +220,7 @@
                 valid = false;
             }
             if (valid) {
-                window.location.href = '/PaginaInicio';
+                window.location.href = '/Home/PaginaInicio';
             }
         });
     }
@@ -292,7 +292,7 @@
         document.getElementById('ob-progress-bar').style.width = '100%';
         document.getElementById('ob-footer').style.display = 'none';
         setTimeout(function() {
-            window.location.href = '/PaginaInicio';
+            window.location.href = '/Home/PaginaInicio';
         }, 2800);
     }
 
