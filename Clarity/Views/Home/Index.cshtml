@@ -1,8 +1,348 @@
 ﻿@{
+    Layout = null;
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="sh-navbar">
+        <a class="sh-brand" href="#">
+            <img src="~/imagenes/logoC.png" alt="Clarity" height="50" />
+            <span><strong>Clarity</strong></span>
+        </a>
+
+        <div class="sh-nav-actions">
+            <button class="sh-theme-toggle" id="themeToggle" title="Cambiar tema" aria-label="Cambiar tema">
+                <span class="icon-light">
+                    <!-- Sun icon -->
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </span>
+                <span class="icon-dark">
+                    <!-- Moon icon -->
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </span>
+                <span class="sh-theme-label" id="themeLabel">Modo oscuro</span>
+            </button>
+            <a href="#" class="sh-btn-outline" id="navLoginBtn">Iniciar sesión</a>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <main class="sh-main">
+        <div class="sh-hero">
+            <img src="~/imagenes/logoC.png" alt="Clarity" height="150"/>
+            <h1 class="sh-hero-title">
+                Organiza tu caos.<br />
+                Domina <span class="sh-accent">tu semana</span>.
+            </h1>
+            <p class="sh-hero-sub">
+                Clarity usa inteligencia artificial para detectar tus tareas,<br class="d-none d-md-inline" />
+                priorizarlas y crear un plan de estudio perfecto para ti.
+            </p>
+        </div>
+
+        <!-- AUTH CARD -->
+        <div class="sh-card" id="authCard">
+
+            <!-- TABS -->
+            <div class="sh-tabs" id="authTabs" role="tablist">
+                <button class="sh-tab active" id="tabRegister" role="tab" aria-selected="true" data-target="panelRegister">
+                    Crear cuenta
+                </button>
+                <button class="sh-tab" id="tabLogin" role="tab" aria-selected="false" data-target="panelLogin">
+                    Iniciar sesión
+                </button>
+                <div class="sh-tab-indicator" id="tabIndicator"></div>
+            </div>
+
+            <!-- REGISTER PANEL -->
+            <div class="sh-panel" id="panelRegister" role="tabpanel">
+                <p class="sh-card-sub">Comienza a organizar tu vida académica</p>
+
+                <div class="sh-field">
+                    <label class="sh-label" for="regName">Nombre completo</label>
+                    <div class="sh-input-wrap">
+                        <span class="sh-input-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </span>
+                        <input type="text" id="regName" class="sh-input" placeholder="Ingresa tu nombre completo" autocomplete="name" />
+                    </div>
+                </div>
+
+                <div class="sh-field">
+                    <label class="sh-label" for="regEmail">Correo electrónico</label>
+                    <div class="sh-input-wrap">
+                        <span class="sh-input-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                        </span>
+                        <input type="email" id="regEmail" class="sh-input" placeholder="Ingresa tu correo electrónico" autocomplete="email" />
+                    </div>
+                </div>
+
+                <div class="sh-field">
+                    <label class="sh-label" for="regPass">Contraseña</label>
+                    <div class="sh-input-wrap">
+                        <span class="sh-input-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                        </span>
+                        <input type="password" id="regPass" class="sh-input" placeholder="Crea una contraseña segura" autocomplete="new-password" />
+                        <button type="button" class="sh-eye-btn" data-target="regPass" aria-label="Ver contraseña">
+                            <svg class="eye-show" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            <svg class="eye-hide d-none" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"></path>
+                                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"></path>
+                                <line x1="1" y1="1" x2="23" y2="23"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="button" class="sh-btn-primary w-100 mt-2">Crear cuenta</button>
+
+                <div class="sh-divider"><span>o continúa con</span></div>
+
+                <div class="sh-social-row">
+                    <button type="button" class="sh-social-btn">
+                        <svg width="19" height="19" viewBox="0 0 48 48">
+                            <path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/>
+                            <path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.32-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/>
+                            <path fill="#FBBC05" d="M11.68 28.18A13.98 13.98 0 0 1 10.94 24c0-1.45.25-2.86.74-4.18v-5.7H4.34A23.98 23.98 0 0 0 0 24c0 3.86.92 7.51 2.56 10.74l7.12-5.7-.0-.86z" />
+                            <path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.34 5.7c1.74-5.2 6.59-9.07 12.32-9.07z"/>
+                        </svg>
+                        Google
+                    </button>
+                    <button type="button" class="sh-social-btn">
+                        <svg width="19" height="19" viewBox="0 0 23 23">
+                            <path fill="#F35325" d="M1 1h10v10H1z"/>
+                            <path fill="#81BC06" d="M12 1h10v10H12z"/>
+                            <path fill="#05A6F0" d="M1 12h10v10H1z"/>
+                            <path fill="#FFBA08" d="M12 12h10v10H12z"/>
+                        </svg>
+                        Microsoft
+                    </button>
+                </div>
+
+                <p class="sh-card-footer">¿Ya tienes cuenta? <a href="#" class="sh-link" data-switch="tabLogin">Iniciar sesión</a></p>
+            </div>
+
+            <!-- LOGIN PANEL -->
+            <div class="sh-panel d-none" id="panelLogin" role="tabpanel">
+                <p class="sh-card-sub">Bienvenido de vuelta</p>
+
+                <div class="sh-field">
+                    <label class="sh-label" for="logEmail">Correo electrónico</label>
+                    <div class="sh-input-wrap">
+                        <span class="sh-input-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                        </span>
+                        <input type="email" id="logEmail" class="sh-input" placeholder="Ingresa tu correo electrónico" autocomplete="email" />
+                    </div>
+                </div>
+
+                <div class="sh-field">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <label class="sh-label mb-0" for="logPass">Contraseña</label>
+                        <a href="#" class="sh-link sh-link-sm">¿Olvidaste tu contraseña?</a>
+                    </div>
+                    <div class="sh-input-wrap">
+                        <span class="sh-input-icon">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                        </span>
+                        <input type="password" id="logPass" class="sh-input" placeholder="Ingresa tu contraseña" autocomplete="current-password" />
+                        <button type="button" class="sh-eye-btn" data-target="logPass" aria-label="Ver contraseña">
+                            <svg class="eye-show" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            <svg class="eye-hide d-none" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"></path>
+                                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"></path>
+                                <line x1="1" y1="1" x2="23" y2="23"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="button" class="sh-btn-primary w-100 mt-2">Iniciar sesión</button>
+
+                <div class="sh-divider"><span>o continúa con</span></div>
+
+                <div class="sh-social-row">
+                    <button type="button" class="sh-social-btn">
+                        <svg width="19" height="19" viewBox="0 0 48 48">
+                            <path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/>
+                            <path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.32-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/>
+                            <path fill="#FBBC05" d="M11.68 28.18A13.98 13.98 0 0 1 10.94 24c0-1.45.25-2.86.74-4.18v-5.7H4.34A23.98 23.98 0 0 0 0 24c0 3.86.92 7.51 2.56 10.74l7.12-5.7-.0-.86z" />
+                            <path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.34 5.7c1.74-5.2 6.59-9.07 12.32-9.07z"/>
+                        </svg>
+                        Google
+                    </button>
+                    <button type="button" class="sh-social-btn">
+                        <svg width="19" height="19" viewBox="0 0 23 23">
+                            <path fill="#F35325" d="M1 1h10v10H1z"/>
+                            <path fill="#81BC06" d="M12 1h10v10H12z"/>
+                            <path fill="#05A6F0" d="M1 12h10v10H1z"/>
+                            <path fill="#FFBA08" d="M12 12h10v10H12z"/>
+                        </svg>
+                        Microsoft
+                    </button>
+                </div>
+
+                <p class="sh-card-footer">¿No tienes cuenta? <a href="#" class="sh-link" data-switch="tabRegister">Crear una</a></p>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- WAVE BACKGROUND -->
+    <div class="sh-waves" aria-hidden="true">
+        <svg viewBox="0 0 1440 320" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+            <path class="sh-wave-1" d="M0,192L60,202.7C120,213,240,235,360,229.3C480,224,600,192,720,186.7C840,181,960,203,1080,213.3C1200,224,1320,224,1380,224L1440,224L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path>
+            <path class="sh-wave-2" d="M0,256L80,250.7C160,245,320,235,480,234.7C640,235,800,245,960,240C1120,235,1280,213,1360,202.7L1440,192L1440,320L1360,320C1280,320,1120,320,960,320C800,320,640,320,480,320C320,320,160,320,80,320L0,320Z"></path>
+        </svg>
+    </div>
+
+    <!-- ====== ONBOARDING MODAL ====== -->
+    <div id="sh-onboarding" class="sh-ob-overlay d-none" aria-modal="true" role="dialog">
+        <div class="sh-ob-wrap">
+
+            <!-- Progress bar -->
+            <div class="sh-ob-progress">
+                <div class="sh-ob-progress-bar" id="ob-progress-bar"></div>
+            </div>
+
+            <!-- PASO 1 — Nombre -->
+            <div class="sh-ob-step" data-step="1">
+                <p class="sh-ob-eyebrow">Paso 1 de 5</p>
+                <h2 class="sh-ob-title">Empecemos con<br/>tu nombre.</h2>
+                <p class="sh-ob-sub">Usaremos esto para personalizar tu experiencia.</p>
+                <input type="text" id="ob-nombre" class="sh-ob-input" placeholder="Tu nombre..." autocomplete="off" />
+            </div>
+
+            <!-- PASO 2 — Nivel -->
+            <div class="sh-ob-step" data-step="2">
+                <p class="sh-ob-eyebrow">Paso 2 de 5</p>
+                <h2 class="sh-ob-title">¿Qué estás<br/>estudiando?</h2>
+                <p class="sh-ob-sub">Esto nos ayuda a darte recomendaciones precisas.</p>
+                <div class="ob-options">
+                    <button class="ob-option-btn" data-value="preparatoria">🏫 Preparatoria</button>
+                    <button class="ob-option-btn" data-value="universidad">🎓 Universidad</button>
+                    <button class="ob-option-btn" data-value="posgrado">🔬 Posgrado</button>
+                    <button class="ob-option-btn" data-value="cursos">💻 Cursos online</button>
+                </div>
+            </div>
+
+            <!-- PASO 3 — Materias -->
+            <div class="sh-ob-step" data-step="3">
+                <p class="sh-ob-eyebrow">Paso 3 de 5</p>
+                <h2 class="sh-ob-title">¿Cuáles son tus<br/>materias clave?</h2>
+                <p class="sh-ob-sub">Escribe y presiona Enter, o elige de las sugerencias.</p>
+                <div class="ob-tags-wrap" id="ob-tags">
+                    <input type="text" id="ob-tag-input" class="ob-tag-input" placeholder="Ej. Cálculo..." autocomplete="off" />
+                </div>
+                <div class="ob-tag-suggestions">
+                    <span class="ob-tag-suggestion">Matemáticas</span>
+                    <span class="ob-tag-suggestion">Física</span>
+                    <span class="ob-tag-suggestion">Programación</span>
+                    <span class="ob-tag-suggestion">Historia</span>
+                    <span class="ob-tag-suggestion">Inglés</span>
+                    <span class="ob-tag-suggestion">Química</span>
+                    <span class="ob-tag-suggestion">Biología</span>
+                </div>
+            </div>
+
+            <!-- PASO 4 — Horas -->
+            <div class="sh-ob-step" data-step="4">
+                <p class="sh-ob-eyebrow">Paso 4 de 5</p>
+                <h2 class="sh-ob-title">¿Cuántas horas<br/>puedes estudiar al día?</h2>
+                <p class="sh-ob-sub">Sé realista — la IA lo usará para tu plan.</p>
+                <div class="ob-slider-wrap">
+                    <span class="ob-slider-val" id="ob-slider-val">3 horas</span>
+                    <input type="range" id="ob-slider" class="ob-slider" min="1" max="10" value="3" />
+                    <div class="ob-slider-labels"><span>1 h</span><span>10 h</span></div>
+                </div>
+            </div>
+
+            <!-- PASO 5 — Objetivo -->
+            <div class="sh-ob-step" data-step="5">
+                <p class="sh-ob-eyebrow">Paso 5 de 5</p>
+                <h2 class="sh-ob-title">¿Qué quieres<br/>mejorar?</h2>
+                <p class="sh-ob-sub">Elige el que más resuene contigo ahora mismo.</p>
+                <div class="ob-goals">
+                    <button class="ob-goal-card" data-value="organizarme">📋 Organizarme mejor</button>
+                    <button class="ob-goal-card" data-value="estres">😮‍💨 Reducir el estrés</button>
+                    <button class="ob-goal-card" data-value="calificaciones">📈 Mejorar calificaciones</button>
+                    <button class="ob-goal-card" data-value="procrastinar">⚡ Dejar de procrastinar</button>
+                    <button class="ob-goal-card" data-value="balance">⚖️ Balancear escuela y vida</button>
+                </div>
+            </div>
+
+            <!-- FINISH -->
+            <div class="sh-ob-step" id="ob-finish" data-step="finish">
+                <div class="ob-finish-inner">
+                    <div class="ob-finish-icon">✦</div>
+                    <h2 class="sh-ob-title">Perfecto.</h2>
+                    <p class="sh-ob-sub">Estamos creando tu espacio de estudio inteligente...</p>
+                    <div class="ob-loader">
+                        <div class="ob-loader-bar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer nav -->
+            <div class="sh-ob-footer" id="ob-footer">
+                <button class="ob-btn-back" id="ob-back" style="visibility:hidden;">← Atrás</button>
+                <button class="ob-btn-next" id="ob-next">Continuar →</button>
+            </div>
+
+        </div>
+    </div>
+    <!-- ====== FIN ONBOARDING ====== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>   
+</body>
+</html>
