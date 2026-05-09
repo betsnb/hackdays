@@ -1,4 +1,4 @@
-﻿@{
+@{
     Layout = null;
     ViewData["Title"] = "Home Page";
 }
@@ -254,78 +254,176 @@
                 <div class="sh-ob-progress-bar" id="ob-progress-bar"></div>
             </div>
 
-            <!-- PASO 1 — Nombre -->
-            <div class="sh-ob-step" data-step="1">
-                <p class="sh-ob-eyebrow">Paso 1 de 5</p>
+            <!-- PASO 1 — Identidad -->
+            <div class="sh-ob-step active" data-step="1">
+                <p class="sh-ob-eyebrow">Paso 1 de 4</p>
                 <h2 class="sh-ob-title">Empecemos con<br/>tu nombre.</h2>
-                <p class="sh-ob-sub">Usaremos esto para personalizar tu experiencia.</p>
+                <p class="sh-ob-sub">Esto nos ayuda a personalizar tu plan desde el primer segundo.</p>
                 <input type="text" id="ob-nombre" class="sh-ob-input" placeholder="Tu nombre..." autocomplete="off" />
             </div>
 
-            <!-- PASO 2 — Nivel -->
+            <!-- PASO 2 — Rol -->
             <div class="sh-ob-step" data-step="2">
-                <p class="sh-ob-eyebrow">Paso 2 de 5</p>
-                <h2 class="sh-ob-title">¿Qué estás<br/>estudiando?</h2>
-                <p class="sh-ob-sub">Esto nos ayuda a darte recomendaciones precisas.</p>
-                <div class="ob-options">
-                    <button class="ob-option-btn" data-value="preparatoria">🏫 Preparatoria</button>
-                    <button class="ob-option-btn" data-value="universidad">🎓 Universidad</button>
-                    <button class="ob-option-btn" data-value="posgrado">🔬 Posgrado</button>
-                    <button class="ob-option-btn" data-value="cursos">💻 Cursos online</button>
+                <p class="sh-ob-eyebrow">Paso 2 de 4</p>
+                <h2 class="sh-ob-title">¿A qué te<br/>dedicas?</h2>
+                <p class="sh-ob-sub">Tu rol define cómo Clarity interpreta tus tareas.</p>
+                <div class="ob-persona-grid">
+                    <div class="ob-persona-card" data-role="cs">
+                        <div class="ob-persona-icon">💻</div>
+                        <p class="ob-persona-title">Estudiante de Ingeniería / CS</p>
+                        <p class="ob-persona-desc">Problem sets, proyectos de código, exámenes técnicos.</p>
+                    </div>
+                    <div class="ob-persona-card" data-role="business">
+                        <div class="ob-persona-icon">📊</div>
+                        <p class="ob-persona-title">Marketing / Negocios</p>
+                        <p class="ob-persona-desc">Proyectos grupales, casos de estudio, presentaciones.</p>
+                    </div>
+                    <div class="ob-persona-card" data-role="research">
+                        <div class="ob-persona-icon">🧪</div>
+                        <p class="ob-persona-title">Investigación / PhD</p>
+                        <p class="ob-persona-desc">Papers, trabajo de laboratorio, reuniones con asesores.</p>
+                    </div>
+                    <div class="ob-persona-card" data-role="other">
+                        <div class="ob-persona-icon">✨</div>
+                        <p class="ob-persona-title">Algo más</p>
+                        <p class="ob-persona-desc">Artes, medicina o cualquier otra disciplina académica.</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- PASO 3 — Materias -->
+            <!-- PASO 3 — Sobre ti & Contexto -->
             <div class="sh-ob-step" data-step="3">
-                <p class="sh-ob-eyebrow">Paso 3 de 5</p>
-                <h2 class="sh-ob-title">¿Cuáles son tus<br/>materias clave?</h2>
-                <p class="sh-ob-sub">Escribe y presiona Enter, o elige de las sugerencias.</p>
-                <div class="ob-tags-wrap" id="ob-tags">
-                    <input type="text" id="ob-tag-input" class="ob-tag-input" placeholder="Ej. Cálculo..." autocomplete="off" />
-                </div>
+                <p class="sh-ob-eyebrow">Paso 3 de 4</p>
+                <h2 class="sh-ob-title">¿Algo más que<br/>debamos saber?</h2>
+                <p class="sh-ob-sub">Compromisos recurrentes, deportes o cualquier detalle que llene tu semana.</p>
+                <textarea id="ob-bio" class="sh-ob-input" style="min-height: 100px;" placeholder="Ej. Capstone project, soccer los Miércoles 8pm, internship 12hr/semana..."></textarea>
+                
+                <p class="sh-label" style="margin-top: 1.5rem;">O ELIGE ALGUNAS:</p>
                 <div class="ob-tag-suggestions">
-                    <span class="ob-tag-suggestion">Matemáticas</span>
-                    <span class="ob-tag-suggestion">Física</span>
-                    <span class="ob-tag-suggestion">Programación</span>
-                    <span class="ob-tag-suggestion">Historia</span>
-                    <span class="ob-tag-suggestion">Inglés</span>
-                    <span class="ob-tag-suggestion">Química</span>
-                    <span class="ob-tag-suggestion">Biología</span>
+                    <span class="ob-tag-suggestion">+ Trabajo medio tiempo</span>
+                    <span class="ob-tag-suggestion">+ Entrenamientos deportivos</span>
+                    <span class="ob-tag-suggestion">+ Club de debate</span>
+                    <span class="ob-tag-suggestion">+ Voluntariado</span>
+                    <span class="ob-tag-suggestion">+ Proyecto personal</span>
                 </div>
             </div>
 
-            <!-- PASO 4 — Horas -->
+            <!-- PASO 4 — Carga de Semana (MOCKUP STYLE) -->
             <div class="sh-ob-step" data-step="4">
-                <p class="sh-ob-eyebrow">Paso 4 de 5</p>
-                <h2 class="sh-ob-title">¿Cuántas horas<br/>puedes estudiar al día?</h2>
-                <p class="sh-ob-sub">Sé realista — la IA lo usará para tu plan.</p>
-                <div class="ob-slider-wrap">
-                    <span class="ob-slider-val" id="ob-slider-val">3 horas</span>
-                    <input type="range" id="ob-slider" class="ob-slider" min="1" max="10" value="3" />
-                    <div class="ob-slider-labels"><span>1 h</span><span>10 h</span></div>
+                <p class="sh-ob-eyebrow">04 · LOAD YOUR WEEK</p>
+                <h2 class="sh-ob-title" id="ob-greeting">Hey friend — what does this week look like?</h2>
+                <p class="sh-ob-sub">Drop a screenshot of Canvas, your syllabus PDF, or just describe it in plain English.<br/>Clarity will read it, extract every deadline, and build your dashboard around it.</p>
+                
+                <div class="ob-setup-grid">
+                    <div class="ob-setup-left">
+                        <!-- Tabs -->
+                        <div class="ob-tabs">
+                            <button class="ob-tab-btn active" data-tab="upload"><span>↑</span> Upload files</button>
+                            <button class="ob-tab-btn" data-tab="text"><span>≡</span> Describe in text</button>
+                            <button class="ob-tab-btn" data-tab="sample"><span>✦</span> Use sample week</button>
+                        </div>
+
+                        <!-- Tab Content: Upload -->
+                        <div class="ob-tab-content active" id="tab-upload">
+                            <div class="ob-upload-box" id="ob-drop-zone">
+                                <div class="ob-upload-icon">↑</div>
+                                <p class="ob-upload-title">Drop files here</p>
+                                <p class="ob-upload-sub">PNG, JPG, PDF — screenshots or syllabi</p>
+                                <div class="ob-upload-tags">
+                                    <span>Canvas</span><span>WhatsApp</span><span>Syllabus</span><span>Notion</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab Content: Text -->
+                        <div class="ob-tab-content" id="tab-text">
+                            <textarea id="ob-text-input" class="sh-ob-input" style="min-height: 180px; margin-top:0;" placeholder="Paste your assignment list or describe your week here..."></textarea>
+                        </div>
+
+                        <!-- Tab Content: Sample -->
+                        <div class="ob-tab-content" id="tab-sample">
+                            <div class="ob-sample-box">
+                                <p>We'll load a sample engineering week with 3 assignments and a midterm to show you how Clarity works.</p>
+                                <button class="ob-sample-load-btn" id="ob-load-sample">Load Sample Data</button>
+                            </div>
+                        </div>
+
+                        <!-- Loaded Files List -->
+                        <div class="ob-loaded-header">
+                            <span id="ob-input-count">0 INPUTS</span> LOADED
+                        </div>
+                        <div class="ob-file-list" id="ob-file-list">
+                            <!-- Dynamic items -->
+                        </div>
+                    </div>
+
+                    <div class="ob-setup-right">
+                        <div class="ob-info-card">
+                            <p class="ob-info-label">WHAT GEMINI WILL DO</p>
+                            <div class="ob-info-step">
+                                <span class="ob-info-num">01</span>
+                                <div>
+                                    <p class="ob-info-title">Read every input</p>
+                                    <p class="ob-info-desc">Multimodal — handles text, images, and PDF together.</p>
+                                </div>
+                            </div>
+                            <div class="ob-info-step">
+                                <span class="ob-info-num">02</span>
+                                <div>
+                                    <p class="ob-info-title">Extract structured tasks</p>
+                                    <p class="ob-info-desc">Title, subject, due date, priority, est. hours, difficulty.</p>
+                                </div>
+                            </div>
+                            <div class="ob-info-step">
+                                <span class="ob-info-num">03</span>
+                                <div>
+                                    <p class="ob-info-title">Reason over your week</p>
+                                    <p class="ob-info-desc">Spot deadline collisions and burnout risk before they happen.</p>
+                                </div>
+                            </div>
+                            <div class="ob-info-step">
+                                <span class="ob-info-num">04</span>
+                                <div>
+                                    <p class="ob-info-title">Build your dashboard</p>
+                                    <p class="ob-info-desc">Calendar, agenda, study plan — all auto-populated.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="ob-analyze-btn" id="ob-analyze-btn">
+                            ✦ Analyze <span id="ob-btn-count">0</span> inputs with Gemini
+                        </button>
+                        <p class="ob-analyze-note">You can add more later from the Upload tab.</p>
+                    </div>
                 </div>
+                <input type="file" id="ob-file-input" class="d-none" multiple accept="image/*,.pdf" />
             </div>
 
-            <!-- PASO 5 — Objetivo -->
-            <div class="sh-ob-step" data-step="5">
-                <p class="sh-ob-eyebrow">Paso 5 de 5</p>
-                <h2 class="sh-ob-title">¿Qué quieres<br/>mejorar?</h2>
-                <p class="sh-ob-sub">Elige el que más resuene contigo ahora mismo.</p>
-                <div class="ob-goals">
-                    <button class="ob-goal-card" data-value="organizarme">📋 Organizarme mejor</button>
-                    <button class="ob-goal-card" data-value="estres">😮‍💨 Reducir el estrés</button>
-                    <button class="ob-goal-card" data-value="calificaciones">📈 Mejorar calificaciones</button>
-                    <button class="ob-goal-card" data-value="procrastinar">⚡ Dejar de procrastinar</button>
-                    <button class="ob-goal-card" data-value="balance">⚖️ Balancear escuela y vida</button>
-                </div>
-            </div>
-
-            <!-- FINISH -->
+            <!-- FINISH (Extraction Pipeline) -->
             <div class="sh-ob-step" id="ob-finish" data-step="finish">
                 <div class="ob-finish-inner">
                     <div class="ob-finish-icon">✦</div>
-                    <h2 class="sh-ob-title">Perfecto.</h2>
-                    <p class="sh-ob-sub">Estamos creando tu espacio de estudio inteligente...</p>
+                    <h2 class="sh-ob-title" style="font-size: 2rem;">Clarity está leyendo tu semana...</h2>
+                    
+                    <div class="ob-pipeline" id="ob-pipeline">
+                        <div class="ob-pipeline-step" id="pipe-vision">
+                            <div class="ob-pipeline-dot"></div>
+                            <span>Vision: Analizando archivos adjuntos</span>
+                        </div>
+                        <div class="ob-pipeline-step" id="pipe-extract">
+                            <div class="ob-pipeline-dot"></div>
+                            <span>Extract: Identificando compromisos académicos</span>
+                        </div>
+                        <div class="ob-pipeline-step" id="pipe-rank">
+                            <div class="ob-pipeline-dot"></div>
+                            <span>Rank: Evaluando prioridad y dificultad</span>
+                        </div>
+                        <div class="ob-pipeline-step" id="pipe-schedule">
+                            <div class="ob-pipeline-dot"></div>
+                            <span>Schedule: Construyendo tu dashboard inteligente</span>
+                        </div>
+                    </div>
+
                     <div class="ob-loader">
                         <div class="ob-loader-bar"></div>
                     </div>

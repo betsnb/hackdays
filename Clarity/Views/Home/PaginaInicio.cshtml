@@ -12,7 +12,7 @@
     <div class="topbar">
 
         <div>
-            <h1>Bienvenido de vuelta 👋</h1>
+            <h1 id="welcome-msg">Bienvenido 👋</h1>
             <p>Continúa tu camino de aprendizaje</p>
         </div>
 
@@ -34,45 +34,44 @@
 
         <div class="card-stat">
             <div class="icon-card azul">📅</div>
-            <h2>8</h2>
+            <h2 id="stat-events">0</h2>
             <p>Eventos esta semana</p>
         </div>
 
         <div class="card-stat">
             <div class="icon-card cyan">🧠</div>
-            <h2>12</h2>
+            <h2 id="stat-tasks">0</h2>
             <p>Tareas detectadas</p>
         </div>
 
         <div class="card-stat">
             <div class="icon-card verde">📖</div>
-            <h2>7</h2>
-            <p>Quizzes completados</p>
+            <h2 id="stat-hours">0</h2>
+            <p>Horas estimadas</p>
         </div>
 
         <div class="card-stat">
             <div class="icon-card morado">📈</div>
-            <h2>7 días</h2>
+            <h2 id="stat-streak">1 día</h2>
             <p>Racha de estudio</p>
         </div>
 
     </div>
 
-    <!-- ALERTA -->
-    <div class="alerta-box">
+    <!-- PLAN PERSONALIZADO (IA) -->
+    <div class="alerta-box gemini-plan" style="background: linear-gradient(135deg, rgba(88, 28, 135, 0.95), rgba(124, 58, 237, 0.88)); border-color: rgba(167, 139, 250, 0.35); box-shadow: 0 18px 35px rgba(88, 28, 135, 0.25);">
 
         <div class="alerta-header">
-            <span>⚠</span>
-            <h3>Alerta de Sobrecarga</h3>
+            <span>✦</span>
+            <h3>Tu Plan Personalizado (Gemini)</h3>
         </div>
 
-        <p>
-            Tienes <strong>3 tareas urgentes</strong> esta semana
+        <p id="ai-plan-text" style="font-style: italic; line-height: 1.6;">
+            Cargando tu plan inteligente...
         </p>
 
-        <span>
-            Gemini detectó que podrías estar sobrecargado.
-            Considera reorganizar tu agenda.
+        <span style="font-size: 0.85rem; opacity: 0.8;">
+            Basado en tus preferencias de onboarding.
         </span>
 
     </div>
@@ -88,53 +87,9 @@
                 <h3>Tareas Detectadas</h3>
             </div>
 
-            <div class="tasks-list">
-
-                <div class="task-item">
-
-                    <div class="task-dot rosa"></div>
-
-                    <div>
-                        <h4>Matemáticas - Examen Final</h4>
-
-                        <div class="task-bottom">
-                            <span>Mañana 10:00 AM</span>
-                            <span class="badge alta">Alta</span>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="task-item">
-
-                    <div class="task-dot cyan-dot"></div>
-
-                    <div>
-                        <h4>Historia - Proyecto de Grupo</h4>
-
-                        <div class="task-bottom">
-                            <span>En 3 días</span>
-                            <span class="badge media">Media</span>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="task-item">
-
-                    <div class="task-dot verde-dot"></div>
-
-                    <div>
-                        <h4>Química - Laboratorio</h4>
-
-                        <div class="task-bottom">
-                            <span>En 5 días</span>
-                            <span class="badge media">Media</span>
-                        </div>
-                    </div>
-
-                </div>
-
+            <div class="tasks-list" id="tasks-list">
+                <!-- Se cargará dinámicamente -->
+                <p style="opacity:0.5; padding: 20px;">Analizando tus tareas...</p>
             </div>
 
         </div>
@@ -147,23 +102,11 @@
                 <h3>Horario Inteligente</h3>
             </div>
 
-            <div class="schedule-list">
-
+            <div class="schedule-list" id="schedule-list">
                 <div class="schedule-item schedule-blue">
-                    <h4>09:00 - 11:00</h4>
-                    <p>Estudiar Matemáticas</p>
+                    <h4>Próximamente</h4>
+                    <p>Completa el onboarding para ver tu horario.</p>
                 </div>
-
-                <div class="schedule-item schedule-cyan">
-                    <h4>14:00 - 16:00</h4>
-                    <p>Proyecto de Historia</p>
-                </div>
-
-                <div class="schedule-item schedule-green">
-                    <h4>18:00 - 19:30</h4>
-                    <p>Flashcards de Química</p>
-                </div>
-
             </div>
 
         </div>
@@ -171,3 +114,199 @@
     </div>
 
 </div>
+
+<!-- Drawer para explicar tareas (Reasoning Drawer) -->
+<div class="task-drawer-overlay" id="task-drawer-overlay"></div>
+<div class="task-drawer" id="task-drawer">
+    <button class="drawer-close" id="drawer-close">×</button>
+    <div class="drawer-header">
+        <span class="drawer-eyebrow">AI ANALYSIS</span>
+        <h3 id="drawer-title">Task Title</h3>
+    </div>
+    <div class="drawer-content" id="drawer-content">
+        <!-- Contenido dinámico -->
+        <div class="drawer-loading">
+            <div class="spinner"></div>
+            <p>Gemini is reasoning over this task...</p>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/site.js"></script>
+<script>
+    const toggleBtn = document.getElementById("themeToggle");
+
+    toggleBtn.addEventListener("click", () => {
+
+        document.body.classList.toggle("light-mode");
+
+        if (document.body.classList.contains("light-mode")) {
+            toggleBtn.innerHTML = "☀️ Modo Claro";
+        } else {
+            toggleBtn.innerHTML = "🌙 Modo Oscuro";
+        }
+
+    });
+
+    // Cargar datos de Onboarding / Gemini
+    window.addEventListener('DOMContentLoaded', () => {
+        const userName = localStorage.getItem('sh_user_name');
+        const aiPlan = localStorage.getItem('sh_ai_plan');
+
+        if (userName) {
+            document.getElementById('welcome-msg').textContent = `¡Hola, ${userName}! 👋`;
+        }
+
+        if (aiPlan) {
+            document.getElementById('ai-plan-text').textContent = aiPlan;
+        } else {
+            document.getElementById('ai-plan-text').textContent = "Aún no has generado un plan personalizado. ¡Vuelve al inicio para comenzar el onboarding!";
+        }
+
+        // Renderizar tareas dinámicas
+        const rawData = localStorage.getItem('sh_ai_raw');
+        if (rawData) {
+            try {
+                const parsed = JSON.parse(rawData);
+                
+                // Actualizar Stats
+                if (parsed.tasks) {
+                    document.getElementById('stat-tasks').textContent = parsed.tasks.length;
+                    const totalHours = parsed.tasks.reduce((acc, t) => acc + (parseInt(t.estimated_hours) || 0), 0);
+                    document.getElementById('stat-hours').textContent = totalHours;
+                    document.getElementById('stat-events').textContent = Math.ceil(parsed.tasks.length / 2);
+                }
+
+                // Renderizar Lista de Tareas
+                const taskList = document.getElementById('tasks-list');
+                if (parsed.tasks && parsed.tasks.length > 0) {
+                    taskList.innerHTML = '';
+                    parsed.tasks.forEach(task => {
+                        const item = document.createElement('div');
+                        item.className = 'task-item';
+                        item.style.cursor = 'pointer'; // Indicador de click
+                        item.innerHTML = `
+                            <div class="task-dot ${getPriorityColor(task.priority)}"></div>
+                            <div>
+                                <h4>${task.title}</h4>
+                                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.4rem;">
+                                    ${task.course ? `<strong>${task.course}</strong> • ` : ''}${task.task_type || 'Task'}
+                                </p>
+                                <div class="task-bottom">
+                                    <span>${task.due_date ? '📅 ' + task.due_date : 'No due date'}</span>
+                                    <span class="badge ${getBadgeClass(task.priority)}">${task.priority}</span>
+                                </div>
+                                ${task.merged_from_images > 1 ? `<span style="font-size: 0.7rem; color: var(--blue); margin-top: 0.3rem; display: inline-block;">🔗 Merged from ${task.merged_from_images} sources</span>` : ''}
+                            </div>
+                        `;
+                        
+                        // Añadir evento click para abrir el Reasoning Drawer
+                        item.addEventListener('click', () => openTaskDrawer(task));
+
+                        taskList.appendChild(item);
+                    });
+
+                    // Renderizar Horario (Simulado con las primeras 3 tareas)
+                    const scheduleList = document.getElementById('schedule-list');
+                    scheduleList.innerHTML = '';
+                    parsed.tasks.slice(0, 3).forEach((task, idx) => {
+                        const colors = ['schedule-blue', 'schedule-cyan', 'schedule-green'];
+                        const times = ['09:00 - 11:00', '14:00 - 16:00', '18:00 - 19:30'];
+                        const item = document.createElement('div');
+                        item.className = `schedule-item ${colors[idx % 3]}`;
+                        item.innerHTML = `
+                            <h4>${times[idx % 3]}</h4>
+                            <p>${task.title}</p>
+                        `;
+                        scheduleList.appendChild(item);
+                    });
+                } else {
+                    taskList.innerHTML = '<p style="opacity:0.5; padding: 20px;">No se detectaron tareas. ¡Disfruta tu tiempo libre!</p>';
+                }
+            } catch (e) { 
+                console.error('Error parsing AI tasks:', e);
+                document.getElementById('tasks-list').innerHTML = '<p style="opacity:0.5; padding: 20px;">Error al cargar tus tareas inteligentes.</p>';
+            }
+        } else {
+             document.getElementById('tasks-list').innerHTML = '<p style="opacity:0.5; padding: 20px;">No hay datos de onboarding disponibles.</p>';
+        }
+    });
+
+    function getPriorityColor(p) {
+        if (p === 'critical' || p === 'high') return 'rosa';
+        if (p === 'medium') return 'cyan-dot';
+        return 'verde-dot';
+    }
+
+    function getBadgeClass(p) {
+        if (p === 'critical' || p === 'high') return 'alta';
+        return 'media';
+    }
+
+    // --- Lógica del Drawer ---
+    const drawer = document.getElementById('task-drawer');
+    const overlay = document.getElementById('task-drawer-overlay');
+    const closeBtn = document.getElementById('drawer-close');
+
+    function closeDrawer() {
+        drawer.classList.remove('open');
+        overlay.classList.remove('open');
+    }
+
+    closeBtn.addEventListener('click', closeDrawer);
+    overlay.addEventListener('click', closeDrawer);
+
+    async function openTaskDrawer(task) {
+        // Abrir drawer y mostrar loading
+        document.getElementById('drawer-title').textContent = task.title;
+        document.getElementById('drawer-content').innerHTML = `
+            <div class="drawer-loading" style="text-align:center; padding: 2rem; opacity:0.7;">
+                <p>✨ Gemini is reasoning over this task...</p>
+            </div>
+        `;
+        
+        drawer.classList.add('open');
+        overlay.classList.add('open');
+
+        try {
+            // Llamar a la API de Gemini que construimos
+            const explanation = await window.ClarityAI.explainTask(task);
+            
+            // Renderizar resultado
+            let stepsHtml = '';
+            if (explanation.breakdown && explanation.breakdown.length > 0) {
+                stepsHtml = `<ul class="drawer-steps">` + 
+                            explanation.breakdown.map(s => `<li>${s}</li>`).join('') + 
+                            `</ul>`;
+            }
+
+            document.getElementById('drawer-content').innerHTML = `
+                <div class="drawer-section">
+                    <h4>Why it matters</h4>
+                    <p>${explanation.reasoning || task.breakdown?.what_it_is || 'No reasoning available.'}</p>
+                </div>
+                <div class="drawer-section">
+                    <h4>Action Plan</h4>
+                    ${stepsHtml}
+                </div>
+            `;
+        } catch (error) {
+            console.error('Error fetching explanation:', error);
+            // Fallback al desglose preexistente si la API falla
+            let fallbackHtml = '<p>Could not load AI explanation.</p>';
+            if (task.breakdown) {
+                 fallbackHtml = `
+                    <div class="drawer-section">
+                        <h4>What it is</h4>
+                        <p>${task.breakdown.what_it_is}</p>
+                    </div>
+                    <div class="drawer-section">
+                        <h4>Start with</h4>
+                        <p><strong>${task.breakdown.start_with}</strong></p>
+                    </div>
+                 `;
+            }
+            document.getElementById('drawer-content').innerHTML = fallbackHtml;
+        }
+    }
+</script>
