@@ -1,51 +1,208 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="es" data-theme="light" id="sh-html">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Clarity</title>
+    <title>@ViewData["Title"] - StudyHub</title>
     <script type="importmap"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Clarity.styles.css" asp-append-version="true" />
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Clarity</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="PaginaInicio">Inicio</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+
+    <!-- ===== MOBILE TOPBAR ===== -->
+    <div class="sh-topbar">
+        <a href="#" class="sh-topbar-brand">StudyHub</a>
+        <button class="sh-hamburger" id="sh-hamburger" aria-label="Abrir menú">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                <line x1="3" y1="6"  x2="21" y2="6"/>
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+        </button>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - Clarity - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+    <!-- Overlay mobile -->
+    <div class="sh-sb-overlay" id="sh-overlay"></div>
+
+    <!-- ===== SHELL ===== -->
+    <div class="sh-shell">
+
+        <!-- ===== SIDEBAR ===== -->
+        <aside class="sh-sidebar" id="sh-sidebar">
+
+            <!-- Brand -->
+            <div class="sh-sb-brand">
+                <div class="sh-sb-logo-icon">S</div>
+                <div>
+                    <div class="sh-sb-brand-name">StudyHub</div>
+                    <div class="sh-sb-brand-sub">Tu plataforma académica</div>
+                </div>
+                <!-- Botón colapsar -->
+                <button class="sh-sb-collapse-btn" id="sb-collapse-btn" aria-label="Colapsar menú">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="sh-sb-divider"></div>
+
+            <!-- Nav links -->
+            <nav class="sh-sb-nav" aria-label="Navegación principal">
+
+                <a class="sh-sb-link @(ViewData["ActivePage"]?.ToString() == "Inicio" ? "active" : "")"
+                   asp-controller="Home" asp-action="PaginaInicio"
+                   data-label="Inicio">
+                    <span class="sh-sb-icon">
+                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                    </span>
+                    <span class="sh-sb-label">Inicio</span>
+                </a>
+
+                <a class="sh-sb-link @(ViewData["ActivePage"]?.ToString() == "Perfil" ? "active" : "")"
+                   asp-controller="Home" asp-action="Perfil"
+                   data-label="Perfil">
+                    <span class="sh-sb-icon">
+                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </span>
+                    <span class="sh-sb-label">Perfil</span>
+                </a>
+
+                <a class="sh-sb-link @(ViewData["ActivePage"]?.ToString() == "Calendario" ? "active" : "")"
+                   asp-controller="Home" asp-action="Calendario"
+                   data-label="Calendario">
+                    <span class="sh-sb-icon">
+                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8"  y1="2" x2="8"  y2="6"></line>
+                            <line x1="3"  y1="10" x2="21" y2="10"></line>
+                        </svg>
+                    </span>
+                    <span class="sh-sb-label">Calendario</span>
+                </a>
+
+                <a class="sh-sb-link @(ViewData["ActivePage"]?.ToString() == "Estudiar" ? "active" : "")"
+                   asp-controller="Home" asp-action="Estudiar"
+                   data-label="Estudiar">
+                    <span class="sh-sb-icon">
+                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                        </svg>
+                    </span>
+                    <span class="sh-sb-label">Estudiar</span>
+                </a>
+
+            </nav>
+
+            <!-- Bottom: theme toggle -->
+            <div class="sh-sb-bottom">
+                <button class="sh-sb-theme-btn" id="sb-theme-toggle" aria-label="Cambiar tema">
+                    <span id="sb-theme-icon">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </span>
+                    <span id="sb-theme-label">Modo oscuro</span>
+                </button>
+            </div>
+
+        </aside>
+
+        <!-- ===== CONTENT ===== -->
+        <main class="sh-content" role="main" id="sh-content">
+            @RenderBody()
+        </main>
+
+    </div>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        // ---- Theme unificado (usa data-theme en <html>) ----
+        (function () {
+            const html     = document.getElementById('sh-html');
+            const btn      = document.getElementById('sb-theme-toggle');
+            const label    = document.getElementById('sb-theme-label');
+            const iconWrap = document.getElementById('sb-theme-icon');
+
+            const MOON = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>';
+            const SUN  = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
+
+            function applyTheme(theme) {
+                html.setAttribute('data-theme', theme);
+                localStorage.setItem('sh_theme', theme);
+                if (theme === 'dark') {
+                    label.textContent  = 'Modo claro';
+                    iconWrap.innerHTML = SUN;
+                } else {
+                    label.textContent  = 'Modo oscuro';
+                    iconWrap.innerHTML = MOON;
+                }
+            }
+
+            const saved = localStorage.getItem('sh_theme') || 'light';
+            applyTheme(saved);
+
+            btn.addEventListener('click', function () {
+                applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+            });
+        })();
+
+        // ---- Sidebar colapsar ----
+        (function () {
+            const sidebar  = document.getElementById('sh-sidebar');
+            const content  = document.getElementById('sh-content');
+            const colBtn   = document.getElementById('sb-collapse-btn');
+
+            const collapsed = localStorage.getItem('sh_sidebar') === 'collapsed';
+            if (collapsed) {
+                sidebar.classList.add('collapsed');
+                content.classList.add('collapsed');
+            }
+
+            colBtn.addEventListener('click', function () {
+                sidebar.classList.toggle('collapsed');
+                content.classList.toggle('collapsed');
+                localStorage.setItem('sh_sidebar',
+                    sidebar.classList.contains('collapsed') ? 'collapsed' : 'expanded');
+            });
+        })();
+
+        // ---- Mobile sidebar ----
+        (function () {
+            const sidebar   = document.getElementById('sh-sidebar');
+            const overlay   = document.getElementById('sh-overlay');
+            const hamburger = document.getElementById('sh-hamburger');
+
+            hamburger.addEventListener('click', function () {
+                sidebar.classList.toggle('open');
+                overlay.classList.toggle('open');
+            });
+
+            overlay.addEventListener('click', function () {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('open');
+            });
+        })();
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
