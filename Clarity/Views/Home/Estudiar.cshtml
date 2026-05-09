@@ -1,0 +1,466 @@
+@{
+    ViewData["Title"] = "Área de Estudio";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="~/css/estudiar.css" />
+
+<div class="container py-4">
+
+    <!-- HEADER -->
+    <div class="page-header">
+
+        <div>
+            <h1 class="page-title">Área de Estudio</h1>
+            <p class="page-subtitle">Powered by Gemini AI</p>
+        </div>
+
+        <button class="btn-upload" onclick="openModal()">
+            ⬆ Subir Material
+        </button>
+
+    </div>
+
+    <!-- MAIN CARD -->
+    <div class="main-card">
+
+        <!-- TABS -->
+        <div class="tabs-header">
+            <button class="tab-btn active" onclick="switchTab('tareas', this)">
+                Tareas Detectadas (3)
+            </button>
+            <button class="tab-btn" onclick="switchTab('flashcards', this)">
+                Flashcards (2)
+            </button>
+            <button class="tab-btn" onclick="switchTab('quizzes', this)">
+                Quizzes (1)
+            </button>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="tab-content-area">
+
+            <!-- TAREAS -->
+            <div class="tab-pane active" id="tab-tareas">
+
+                <div class="tarea-card urgente">
+                    <div class="tarea-header">
+                        <div>
+                            <p class="tarea-title">Examen Final de Matemáticas</p>
+                            <p class="tarea-desc">Capítulos 1-5: Cálculo diferencial e integral</p>
+                        </div>
+                        <span class="badge-urgente">Urgente</span>
+                    </div>
+                    <div class="tarea-meta">
+                        <div class="meta-item">
+                            <span class="meta-icon">⚠️</span>
+                            <div>
+                                <span class="meta-label">Dificultad</span>
+                                <span class="meta-value">Alta</span>
+                            </div>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">📅</span>
+                            <div>
+                                <span class="meta-label">Fecha límite</span>
+                                <span class="meta-value">09 may</span>
+                            </div>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">🕐</span>
+                            <div>
+                                <span class="meta-label">Tiempo estimado</span>
+                                <span class="meta-value">8 horas</span>
+                            </div>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">🔍</span>
+                            <div>
+                                <span class="meta-label">Detectado de</span>
+                                <span class="meta-value">Screenshot de horario</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tarea-card alta">
+                    <div class="tarea-header">
+                        <div>
+                            <p class="tarea-title">Proyecto Grupal de Historia</p>
+                            <p class="tarea-desc">Investigación sobre la Revolución Industrial</p>
+                        </div>
+                        <span class="badge-alta">Alta</span>
+                    </div>
+                    <div class="tarea-meta">
+                        <div class="meta-item">
+                            <span class="meta-icon">⚠️</span>
+                            <div>
+                                <span class="meta-label">Dificultad</span>
+                                <span class="meta-value">Media</span>
+                            </div>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">📅</span>
+                            <div>
+                                <span class="meta-label">Fecha límite</span>
+                                <span class="meta-value">11 may</span>
+                            </div>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">🕐</span>
+                            <div>
+                                <span class="meta-label">Tiempo estimado</span>
+                                <span class="meta-value">6 horas</span>
+                            </div>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">🔍</span>
+                            <div>
+                                <span class="meta-label">Detectado de</span>
+                                <span class="meta-value">Mensajes de WhatsApp</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tarea-card media">
+                    <div class="tarea-header">
+                        <div>
+                            <p class="tarea-title">Laboratorio de Química</p>
+                            <p class="tarea-desc">Práctica de titulación ácido-base</p>
+                        </div>
+                        <span class="badge-media">Media</span>
+                    </div>
+                    <div class="tarea-meta">
+                        <div class="meta-item">
+                            <span class="meta-icon">⚠️</span>
+                            <div>
+                                <span class="meta-label">Dificultad</span>
+                                <span class="meta-value">Media</span>
+                            </div>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">📅</span>
+                            <div>
+                                <span class="meta-label">Fecha límite</span>
+                                <span class="meta-value">13 may</span>
+                            </div>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">🕐</span>
+                            <div>
+                                <span class="meta-label">Tiempo estimado</span>
+                                <span class="meta-value">3 horas</span>
+                            </div>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-icon">🔍</span>
+                            <div>
+                                <span class="meta-label">Detectado de</span>
+                                <span class="meta-value">PDF del profesor</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+<!-- FLASHCARDS -->
+<div class="tab-pane" id="tab-flashcards">
+
+    <div class="flashcards-grid">
+
+        <div class="flashcard-wrapper" onclick="flipCard(this)">
+            <div class="flashcard-inner">
+                <div class="flashcard-front">
+                    <p class="flashcard-q">Pregunta</p>
+                    <p class="flashcard-text">¿Qué es la derivada de una función?</p>
+                    <p class="flashcard-hint">👆 Clic para voltear</p>
+                </div>
+                <div class="flashcard-back">
+                    <p class="flashcard-q">Respuesta</p>
+                    <p class="flashcard-text">La tasa de cambio instantánea de una función en un punto dado, representada como f'(x) o dy/dx.</p>
+                    <p class="flashcard-hint">👆 Clic para voltear</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flashcard-wrapper" onclick="flipCard(this)">
+            <div class="flashcard-inner">
+                <div class="flashcard-front">
+                    <p class="flashcard-q">Pregunta</p>
+                    <p class="flashcard-text">¿Cuándo inició la Revolución Industrial?</p>
+                    <p class="flashcard-hint">👆 Clic para voltear</p>
+                </div>
+                <div class="flashcard-back">
+                    <p class="flashcard-q">Respuesta</p>
+                    <p class="flashcard-text">A mediados del siglo XVIII en Gran Bretaña, extendiéndose luego al resto de Europa.</p>
+                    <p class="flashcard-hint">👆 Clic para voltear</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+            </div>
+
+<!-- QUIZZES -->
+<div class="tab-pane" id="tab-quizzes">
+
+    <div id="quizContainer"></div>
+
+    <div id="quizResult" style="display:none">
+        <div class="quiz-result-card">
+            <p class="result-emoji" id="resultEmoji"></p>
+            <p class="result-title" id="resultTitle"></p>
+            <p class="result-score" id="resultScore"></p>
+            <button class="btn-restart" onclick="startQuiz()">🔄 Intentar de nuevo</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeOnBackdrop(event)">
+
+    <div class="modal-box">
+
+        <p class="modal-title">Subir Material de Estudio</p>
+        <p class="modal-subtitle">Selecciona el tipo de contenido:</p>
+
+        <div class="tipo-grid">
+            <div class="tipo-btn" onclick="selectTipo(this)">
+                <span class="tipo-icon">🖼️</span>
+                Screenshot
+            </div>
+            <div class="tipo-btn" onclick="selectTipo(this)">
+                <span class="tipo-icon">📅</span>
+                Horario
+            </div>
+            <div class="tipo-btn" onclick="selectTipo(this)">
+                <span class="tipo-icon">💬</span>
+                Mensajes
+            </div>
+            <div class="tipo-btn" onclick="selectTipo(this)">
+                <span class="tipo-icon">📝</span>
+                Notas
+            </div>
+            <div class="tipo-btn selected-pink" onclick="selectTipo(this)">
+                <span class="tipo-icon">📄</span>
+                PDF
+            </div>
+        </div>
+
+        <div class="dropzone" onclick="document.getElementById('fileInput').click()">
+            <div class="dropzone-icon">⬆</div>
+            <p class="dropzone-text">Seleccionar archivo</p>
+            <p class="dropzone-hint">Imágenes, PDF, TXT, DOC hasta 10MB</p>
+            <input type="file" id="fileInput" style="display:none" accept=".pdf,.png,.jpg,.txt,.doc,.docx">
+        </div>
+
+        <div class="ai-info">
+            <p class="ai-info-title">✦ Gemini AI analizará:</p>
+            <ul>
+                <li>Detectar tareas automáticamente</li>
+                <li>Clasificar urgencia y dificultad</li>
+                <li>Estimar tiempo necesario</li>
+                <li>Generar flashcards y quizzes</li>
+                <li>Crear horario inteligente</li>
+                <li>Detectar sobrecarga académica</li>
+            </ul>
+        </div>
+
+        <div class="modal-footer-btns">
+            <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+            <button class="btn-analizar">✦ Analizar con Gemini</button>
+        </div>
+
+    </div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+    // ========================
+    // TABS
+    // ========================
+
+    function switchTab(tab, btn) {
+        document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('tab-' + tab).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    // ========================
+    // MODAL
+    // ========================
+
+    function openModal() {
+        document.getElementById('modalOverlay').classList.add('show');
+    }
+
+    function closeModal() {
+        document.getElementById('modalOverlay').classList.remove('show');
+    }
+
+    function closeOnBackdrop(e) {
+        if (e.target === document.getElementById('modalOverlay')) closeModal();
+    }
+
+    function selectTipo(el) {
+        document.querySelectorAll('.tipo-btn').forEach(b => {
+            b.classList.remove('selected', 'selected-pink');
+        });
+        el.classList.add('selected');
+    }
+
+    // ========================
+    // FLASHCARDS
+    // ========================
+
+    function flipCard(el) {
+        el.classList.toggle('flipped');
+    }
+
+    // ========================
+    // QUIZ
+    // ========================
+
+    const preguntas = [
+        {
+            pregunta: "¿Cuál es la derivada de f(x) = x²?",
+            opciones: ["f'(x) = x", "f'(x) = 2x", "f'(x) = x²", "f'(x) = 2"],
+            correcta: 1
+        },
+        {
+            pregunta: "¿En qué siglo inició la Revolución Industrial?",
+            opciones: ["Siglo XVI", "Siglo XVII", "Siglo XVIII", "Siglo XIX"],
+            correcta: 2
+        },
+        {
+            pregunta: "¿Qué es la titulación ácido-base?",
+            opciones: [
+                "Una reacción de oxidación",
+                "Un método para determinar la concentración de una solución",
+                "Un proceso de filtración",
+                "Una técnica de calentamiento"
+            ],
+            correcta: 1
+        }
+    ];
+
+    let currentQ = 0;
+    let score = 0;
+    let answered = false;
+
+    function startQuiz() {
+        currentQ = 0;
+        score = 0;
+        answered = false;
+        document.getElementById('quizResult').style.display = 'none';
+        document.getElementById('quizContainer').style.display = 'block';
+        renderQuestion();
+    }
+
+    function renderQuestion() {
+        const q = preguntas[currentQ];
+        const progress = ((currentQ) / preguntas.length) * 100;
+
+        document.getElementById('quizContainer').innerHTML = `
+            <div class="quiz-card">
+
+                <p class="quiz-progress">Pregunta ${currentQ + 1} de ${preguntas.length}</p>
+
+                <div class="quiz-progress-bar">
+                    <div class="quiz-progress-fill" style="width: ${progress}%"></div>
+                </div>
+
+                <p class="quiz-question">${q.pregunta}</p>
+
+                <div class="quiz-options" id="quizOptions">
+                    ${q.opciones.map((op, i) => `
+                        <button class="quiz-option" onclick="selectAnswer(${i})">
+                            ${String.fromCharCode(65 + i)}) ${op}
+                        </button>
+                    `).join('')}
+                </div>
+
+                <div class="quiz-feedback" id="quizFeedback"></div>
+
+                <button class="btn-next" id="btnNext" onclick="nextQuestion()">
+                    ${currentQ + 1 < preguntas.length ? 'Siguiente pregunta →' : 'Ver resultado'}
+                </button>
+
+            </div>
+        `;
+
+        answered = false;
+    }
+
+    function selectAnswer(index) {
+        if (answered) return;
+        answered = true;
+
+        const q = preguntas[currentQ];
+        const options = document.querySelectorAll('.quiz-option');
+        const feedback = document.getElementById('quizFeedback');
+        const btnNext = document.getElementById('btnNext');
+
+        options.forEach(o => o.disabled = true);
+
+        if (index === q.correcta) {
+            options[index].classList.add('correct');
+            feedback.className = 'quiz-feedback correct';
+            feedback.textContent = '✅ ¡Correcto! Muy bien.';
+            score++;
+        } else {
+            options[index].classList.add('wrong');
+            options[q.correcta].classList.add('correct');
+            feedback.className = 'quiz-feedback wrong';
+            feedback.textContent = `❌ Incorrecto. La respuesta correcta es: ${String.fromCharCode(65 + q.correcta)}) ${q.opciones[q.correcta]}`;
+        }
+
+        btnNext.style.display = 'block';
+    }
+
+    function nextQuestion() {
+        currentQ++;
+
+        if (currentQ >= preguntas.length) {
+            showResult();
+        } else {
+            renderQuestion();
+        }
+    }
+
+    function showResult() {
+        document.getElementById('quizContainer').style.display = 'none';
+        document.getElementById('quizResult').style.display = 'block';
+
+        const pct = Math.round((score / preguntas.length) * 100);
+        let emoji, title;
+
+        if (pct === 100) {
+            emoji = '🏆'; title = '¡Perfecto!';
+        } else if (pct >= 66) {
+            emoji = '🎉'; title = '¡Bien hecho!';
+        } else if (pct >= 33) {
+            emoji = '📚'; title = 'Sigue practicando';
+        } else {
+            emoji = '💪'; title = '¡Tú puedes!';
+        }
+
+        document.getElementById('resultEmoji').textContent = emoji;
+        document.getElementById('resultTitle').textContent = title;
+        document.getElementById('resultScore').textContent =
+            `Obtuviste ${score} de ${preguntas.length} correctas (${pct}%)`;
+    }
+
+    // Iniciar quiz al cargar
+    startQuiz();
+
+</script>

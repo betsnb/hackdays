@@ -17,6 +17,11 @@ public class HomeController : Controller
     {
         return View();
     }
+    
+    public IActionResult Estudiar()
+    {
+        return View();
+    }
     public IActionResult PaginaInicio()
     {
         return View();
