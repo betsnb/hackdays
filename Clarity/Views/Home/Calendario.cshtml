@@ -1,0 +1,508 @@
+@{
+    ViewData["Title"] = "Calendario";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/calendario.css" asp-append-version="true" />
+}
+
+<div class="container py-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+
+        <div>
+            <h1 class="titulo">Calendario</h1>
+            <p class="subtitulo">
+                Organiza tus tareas y eventos
+            </p>
+        </div>
+
+        <div class="d-flex gap-2">
+
+            <button class="btn btn-primary-custom"
+                    onclick="modal.show()">
+                + Agregar Evento
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- LAYOUT PRINCIPAL -->
+    <div class="main-layout">
+
+        <!-- CALENDARIO -->
+        <div class="calendar-card">
+
+            <!-- TOP -->
+            <div class="calendar-header">
+
+                <button class="nav-btn">
+                    ❮
+                </button>
+
+                <h3>Mayo 2026</h3>
+
+                <button class="nav-btn">
+                    ❯
+                </button>
+
+            </div>
+
+            <!-- WEEKDAYS -->
+            <div class="weekdays">
+
+                <div>Dom</div>
+                <div>Lun</div>
+                <div>Mar</div>
+                <div>Mié</div>
+                <div>Jue</div>
+                <div>Vie</div>
+                <div>Sáb</div>
+
+            </div>
+
+            <!-- GRID -->
+            <div class="calendar-grid">
+
+                <!-- VACIOS -->
+                <div class="day empty"></div>
+                <div class="day empty"></div>
+                <div class="day empty"></div>
+                <div class="day empty"></div>
+                <div class="day empty"></div>
+
+                <!-- DIAS -->
+                @for (int i = 1; i <= 31; i++)
+                {
+                    <div class="day"
+                         data-day="@i"
+                         onclick="openDayModal(@i)">
+
+                        <span class="number">@i</span>
+
+                        <div class="events-container"></div>
+
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+        <!-- EVENTOS -->
+        <div class="events-card">
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+
+                <h4 class="m-0">
+                    Próximos Eventos
+                </h4>
+
+                <span class="badge-events"
+                      id="eventCount">
+
+                    0 Eventos
+                </span>
+
+            </div>
+
+            <div id="eventsList"></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal fade"
+     id="eventModal"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content custom-modal">
+
+            <!-- HEADER -->
+            <div class="modal-header border-0 pb-0">
+
+                <h5 class="fw-bold">
+                    ✨ Nuevo Evento
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <!-- BODY -->
+            <div class="modal-body">
+
+                <!-- TITULO -->
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Materia / Evento
+                    </label>
+
+                    <input type="text"
+                           class="form-control custom-input"
+                           id="eventTitle"
+                           placeholder="Ej. Examen de Matemáticas">
+
+                </div>
+
+                <!-- LUGAR -->
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Lugar
+                    </label>
+
+                    <input type="text"
+                           class="form-control custom-input"
+                           id="eventPlace"
+                           placeholder="Ej. Salón A203">
+
+                </div>
+
+                <!-- FECHA Y HORA -->
+                <div class="row">
+
+                    <div class="col">
+
+                        <label class="form-label">
+                            Fecha
+                        </label>
+
+                        <input type="date"
+                               class="form-control custom-input"
+                               id="eventDate">
+
+                    </div>
+
+                    <div class="col">
+
+                        <label class="form-label">
+                            Hora
+                        </label>
+
+                        <input type="time"
+                               class="form-control custom-input"
+                               id="eventTime">
+
+                    </div>
+
+                </div>
+
+                <!-- COLORES -->
+                <div class="mt-3">
+
+                    <label class="form-label d-block">
+                        Color
+                    </label>
+
+                    <div class="color-picker">
+
+                        <div class="color-option blue selected"
+                             onclick="selectColor('blue', this)">
+                        </div>
+
+                        <div class="color-option green"
+                             onclick="selectColor('green', this)">
+                        </div>
+
+                        <div class="color-option cyan"
+                             onclick="selectColor('cyan', this)">
+                        </div>
+
+                        <div class="color-option pink"
+                             onclick="selectColor('pink', this)">
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- DESCRIPCION -->
+                <div class="mt-3">
+
+                    <label class="form-label">
+                        Descripción
+                    </label>
+
+                    <textarea class="form-control custom-input"
+                              rows="2"
+                              id="eventDescription"
+                              placeholder="Opcional">
+                    </textarea>
+
+                </div>
+
+            </div>
+
+            <!-- FOOTER -->
+            <div class="modal-footer border-0 pt-0">
+
+                <button class="btn btn-save w-100"
+                        onclick="saveEvent()">
+
+                    Guardar Evento
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- BOOTSTRAP -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+    let selectedColor = "blue";
+
+    const modalElement =
+        document.getElementById('eventModal');
+
+    const modal =
+        new bootstrap.Modal(modalElement);
+
+    // =========================
+    // ABRIR MODAL
+    // =========================
+
+    function openDayModal(day) {
+
+        const date =
+            `2026-05-${String(day).padStart(2, '0')}`;
+
+        document.getElementById("eventDate").value = date;
+
+        modal.show();
+    }
+
+    // =========================
+    // COLOR
+    // =========================
+
+    function selectColor(color, element) {
+
+        selectedColor = color;
+
+        document
+            .querySelectorAll(".color-option")
+            .forEach(c => c.classList.remove("selected"));
+
+        element.classList.add("selected");
+    }
+
+    // =========================
+    // GUARDAR EVENTO
+    // =========================
+
+    function saveEvent() {
+
+        const title =
+            document.getElementById("eventTitle").value;
+
+        const place =
+            document.getElementById("eventPlace").value;
+
+        const date =
+            document.getElementById("eventDate").value;
+
+        const time =
+            document.getElementById("eventTime").value;
+
+        const description =
+            document.getElementById("eventDescription").value;
+
+        if (!title || !date || !time) {
+
+            alert("Completa los campos obligatorios");
+
+            return;
+        }
+
+        const day =
+            new Date(date + "T00:00:00").getDate();
+
+        // EVENTO CALENDARIO
+
+        const dayBox =
+            document.querySelector(`[data-day='${day}']`);
+
+        const eventDiv =
+            document.createElement("div");
+
+        eventDiv.className =
+            `event ${selectedColor}`;
+
+        eventDiv.textContent =
+            `${time} ${title}`;
+
+        dayBox
+            .querySelector(".events-container")
+            .appendChild(eventDiv);
+
+        // EVENTO CARD
+
+        const eventsList =
+            document.getElementById("eventsList");
+
+        const card =
+            document.createElement("div");
+
+        card.className =
+            "event-item fade-in";
+
+        card.dataset.day = day;
+        card.dataset.title = title;
+        card.dataset.time = time;
+
+        card.innerHTML = `
+
+            <div class="event-left">
+
+                <div class="line ${selectedColor}-line"></div>
+
+                <div>
+
+                    <h5>${title}</h5>
+
+                    <p>${date} - ${time}</p>
+
+                    <small>📍 ${place}</small>
+
+                    <div class="desc">
+                        ${description}
+                    </div>
+
+                </div>
+
+            </div>
+
+            <button class="delete-btn"
+                    onclick="deleteEvent(this)">
+
+                ✕
+            </button>
+        `;
+
+        eventsList.prepend(card);
+
+        updateCounter();
+        clearForm();
+        modal.hide();
+    }
+
+    // =========================
+    // ELIMINAR
+    // =========================
+
+    function deleteEvent(button) {
+
+        const card = button.parentElement;
+
+        const day = card.dataset.day;
+        const title = card.dataset.title;
+        const time = card.dataset.time;
+
+        const dayBox =
+            document.querySelector(`[data-day='${day}']`);
+
+        if (dayBox) {
+            dayBox.querySelectorAll(".event").forEach(ev => {
+                if (ev.textContent.trim() === `${time} ${title}`) {
+                    ev.remove();
+                }
+            });
+        }
+
+        card.remove();
+
+        updateCounter();
+    }
+
+    // =========================
+    // CONTADOR
+    // =========================
+
+    function updateCounter() {
+
+        const total =
+            document.querySelectorAll(".event-item").length;
+
+        document.getElementById("eventCount")
+            .innerHTML = `${total} Eventos`;
+    }
+
+    // =========================
+    // LIMPIAR
+    // =========================
+
+    function clearForm() {
+
+        document.getElementById("eventTitle").value = "";
+        document.getElementById("eventPlace").value = "";
+        document.getElementById("eventTime").value = "";
+        document.getElementById("eventDescription").value = "";
+    }
+
+    // =========================
+    // EVENTOS DE EJEMPLO
+    // =========================
+
+    const ejemplos = [
+        { title: "Examen de Matemáticas", place: "Salón A203", date: "2026-05-12", time: "09:00", color: "blue", description: "Capítulos 4 al 7, traer calculadora" },
+        { title: "Entrega de Proyecto", place: "Laboratorio 3", date: "2026-05-15", time: "11:30", color: "green", description: "Presentación final del semestre" },
+        { title: "Tutoría de Física", place: "Biblioteca", date: "2026-05-19", time: "14:00", color: "cyan", description: "Repaso de termodinámica" },
+        { title: "Examen de Historia", place: "Aula Magna", date: "2026-05-22", time: "10:00", color: "pink", description: "Época moderna y contemporánea" },
+        { title: "Reunión de Equipo", place: "Sala de Juntas", date: "2026-05-27", time: "16:00", color: "blue", description: "Avances del proyecto integrador" },
+    ];
+
+    ejemplos.forEach(ev => {
+
+        const day = new Date(ev.date + "T00:00:00").getDate();
+
+        const dayBox = document.querySelector(`[data-day='${day}']`);
+        const eventDiv = document.createElement("div");
+        eventDiv.className = `event ${ev.color}`;
+        eventDiv.textContent = `${ev.time} ${ev.title}`;
+        dayBox.querySelector(".events-container").appendChild(eventDiv);
+
+        const card = document.createElement("div");
+        card.className = "event-item fade-in";
+        card.dataset.day = day;
+        card.dataset.title = ev.title;
+        card.dataset.time = ev.time;
+
+        card.innerHTML = `
+            <div class="event-left">
+                <div class="line ${ev.color}-line"></div>
+                <div>
+                    <h5>${ev.title}</h5>
+                    <p>${ev.date} - ${ev.time}</p>
+                    <small>📍 ${ev.place}</small>
+                    <div class="desc">${ev.description}</div>
+                </div>
+            </div>
+            <button class="delete-btn" onclick="deleteEvent(this)">✕</button>
+        `;
+
+        document.getElementById("eventsList").appendChild(card);
+    });
+
+    updateCounter();
+
+</script>
